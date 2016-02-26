@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
@@ -56,7 +55,7 @@ public class Seg {
 		}
 		Set<String> keywords = resTF.keySet();
 		Iterator<String> it = keywords.iterator();
-		System.out.println("词频大于1的词语有：");
+		/*System.out.println("词频大于1的词语有："); //TODO ComputeSimOfTwo中不需要注释
 		while (it.hasNext()) {
 			String word = it.next();
 			int fre = resTF.get(word);
@@ -65,7 +64,7 @@ public class Seg {
 			}
 
 		}
-		System.out.println();
+		System.out.println();*/
 		return resTF;
 	}
 

@@ -16,7 +16,7 @@ import org.wltea.analyzer.core.Lexeme;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import com.abc.vsm.Seg;
-import com.abc.vsm.Sim;
+import com.abc.vsm.Vsm;
 import com.abc.vsm.TFIDF;
 
 public class ComputeSimOfTwo {
@@ -63,7 +63,7 @@ public class ComputeSimOfTwo {
 	        }
 			
 			System.out.println("两篇文章的相似度："
-					+ Sim.vsm(list.get(0).normalTF(), list.get(1).normalTF()));
+					+ Vsm.compareTwo(list.get(0).normalTF(), list.get(1).normalTF()));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
