@@ -16,7 +16,7 @@ public class Vsm {
 	 * @return 两个向量相似度
 	 */
 	public static double compareTwo(HashMap<String, Integer> tf1,HashMap<String, Integer> tf2) {
-		System.out.println("------------------------------------------------------------------");
+		//System.out.println("------------------------------------------------------------------");
 		int mod1 = mod(tf1);
 		int mod2 = mod(tf2);
 		double dotProduct = 0;
@@ -29,21 +29,10 @@ public class Vsm {
 			int num2 = tf2.get(it2.next());
 			dotProduct += num1 * num2;
 		}
-		System.out.println("两篇文章文章的点积是："+dotProduct);
+		//System.out.println("两篇文章文章的点积是："+dotProduct);
 		return dotProduct/Math.sqrt(mod1*mod2);
 	}
 	
-	private static int mod(HashMap<String, Integer> tf){
-		int sum = 0;
-		Set<String> keywords = tf.keySet();
-		Iterator<String> it = keywords.iterator();
-		while (it.hasNext()) {
-			int fre = tf.get(it.next());
-			sum += fre*fre;
-		}
-		//System.out.println("該文章的模|v|是："+sum);  //TODO ComputeSimOfTwo中不需要注释
-		return sum;
-	}
 	/**
 	 * @return 两个文本相似度
 	 */
@@ -65,15 +54,20 @@ public class Vsm {
 		return dotProduct/Math.sqrt(mod1*mod2);
 	}
 	
+	
 	/**
 	 * @return 新闻集合，相同内容新闻被划分在一起
 	 */
 	public static List<List<News>> compareMutiple(List<News> newsList) {
 		List<List<News>> newsGroup = new ArrayList<List<News>>();
 		List<Boolean> tagList = new ArrayList<Boolean>();
+		List<HashMap<String, Integer>> tfList = new ArrayList<HashMap<String, Integer>>();
 		int size = newsList.size();
-		for (int i = 0; i < size; i++) 
+		for (int i = 0; i < size; i++) {
 			tagList.add(new Boolean(true));
+			HashMap<String, Integer> tf = new Seg(newsList.get(i).getContent()).normalTF();
+			tfList.add(tf);
+		}
 		
 		for (int i = 0; i < size-1; i++) {
 			if(tagList.get(i)){
@@ -84,7 +78,7 @@ public class Vsm {
 				for (; j < size; j++) {
 					if(tagList.get(j)){
 						News news2 = newsList.get(j);
-						if(Vsm.compareTwo(news1.getContent(), news2.getContent()) == 1){
+						if(Vsm.compareTwo(tfList.get(i),tfList.get(j)) == 1){
 							sameNews.add(news2);
 							tagList.set(j, new Boolean(false));
 						}
@@ -99,5 +93,17 @@ public class Vsm {
 			}
 		}
 		return newsGroup;
+	}
+
+	private static int mod(HashMap<String, Integer> tf){
+		int sum = 0;
+		Set<String> keywords = tf.keySet();
+		Iterator<String> it = keywords.iterator();
+		while (it.hasNext()) {
+			int fre = tf.get(it.next());
+			sum += fre*fre;
+		}
+		//System.out.println("該文章的模|v|是："+sum);  //TODO ComputeSimOfTwo中不需要注释
+		return sum;
 	}
 }

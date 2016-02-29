@@ -34,7 +34,8 @@ public class Seg {
 				str1.add(lexeme.getLexemeText());
 			}
 			if (str1.size() == 0) {
-				return null;
+				System.out.println("分词失败："+text);
+				return str1;
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -46,26 +47,32 @@ public class Seg {
 		Vector<String> words = this.participle();
 		HashMap<String, Integer> resTF = new HashMap<String, Integer>();
 
-		for (String word : words) {
-			if (resTF.get(word) == null) {
-				resTF.put(word, 1);
-			} else {
-				resTF.put(word, resTF.get(word) + 1);
-			}
+		if(words == null){
+			System.out.println(words.size());
+			return null;
 		}
-		Set<String> keywords = resTF.keySet();
-		Iterator<String> it = keywords.iterator();
-		/*System.out.println("词频大于1的词语有："); //TODO ComputeSimOfTwo中不需要注释
-		while (it.hasNext()) {
-			String word = it.next();
-			int fre = resTF.get(word);
-			if (fre > 0) {
-				System.out.print(word + ":" + fre);
+		else{
+			for (String word : words) {
+				if (resTF.get(word) == null) {
+					resTF.put(word, 1);
+				} else {
+					resTF.put(word, resTF.get(word) + 1);
+				}
 			}
+			Set<String> keywords = resTF.keySet();
+			Iterator<String> it = keywords.iterator();
+			/*System.out.println("词频大于1的词语有："); //TODO ComputeSimOfTwo中不需要注释
+			while (it.hasNext()) {
+				String word = it.next();
+				int fre = resTF.get(word);
+				if (fre > 0) {
+					System.out.print(word + ":" + fre);
+				}
 
+			}
+			System.out.println();*/
+			return resTF;
 		}
-		System.out.println();*/
-		return resTF;
 	}
 
 }

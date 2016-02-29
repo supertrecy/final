@@ -124,8 +124,8 @@ public class News {
 
 	@Override
 	public String toString() {
-		return "News [id=" + id + ", title=" + title + "]";
+		return "News [id=" + id + ", site=" + site + ", source=" + source
+				+ ", title=" + title + ", publish_time=" + publish_time + "]";
 	}
 
-	
 }
