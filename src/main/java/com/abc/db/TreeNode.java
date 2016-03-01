@@ -30,9 +30,13 @@ public class TreeNode<E> {
 	public void setElement(E element) {
 		this.element = element;
 	}
-	
-	public void addChild(TreeNode<E> e){
+
+	public void addChild(TreeNode<E> e) {
 		children.add(e);
+	}
+
+	public int getChildrenNum() {
+		return children.size();
 	}
 
 	public JSONObject wholeTreeToJSON() {
@@ -43,9 +47,24 @@ public class TreeNode<E> {
 		return jsonObject;
 	}
 
-	/*private void traverse(){
-		
-	}*/
-		
-	
+	public TreeNode<E> traverseCompare(E element) {
+		if (this.element.equals(element)) {
+			return this;
+		} else {
+			for (TreeNode<E> treeNode : children) {
+				TreeNode<E> child;
+				if ((child = treeNode.traverseCompare(element)) != null) {
+					return child;
+				}
+			}
+		}
+		return null;
+	}
+
+	/*
+	 * private void traverse(){
+	 * 
+	 * }
+	 */
+
 }

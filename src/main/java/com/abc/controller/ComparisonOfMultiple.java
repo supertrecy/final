@@ -146,6 +146,7 @@ public class ComparisonOfMultiple {
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
 			if (news.size() > 1) {
+				new ComparisonOfMultiple().listToTree(news);
 			}
 		}
 		double time = (double) (System.currentTimeMillis() - start) / 1000;
@@ -153,36 +154,54 @@ public class ComparisonOfMultiple {
 		System.out.println("总耗时" + time + "秒");
 	}
 
-	private void listToTree(List<News> list) { //TODO change String to other object,such as TempDataStructure
-		Queue<TreeNode<String>> queue = new LinkedList<TreeNode<String>>();
-		int i = 0;
-		int j = 0;
-		int size = list.size();
+	private void listToTree(List<News> list) { // TODO change String to other object,such as TempDataStructure
+		List<TreeNode<String>> queue = new LinkedList<TreeNode<String>>();
 		for (News news : list) {
 			String source = news.getSource();
 			String site = news.getSite();
 			if (source == null) {
-				continue; 					//TODO how to resolve the problem that source is null
+				continue; // TODO how to resolve the problem that source is null
+			} else if (site == null) {
+				continue; // TODO how to resolve the problem that site is null
+			} else {
+				// insert node to queue's tree
+				insertNode(source, site, queue);
 			}
-			else if(site == null){
-				TreeNode<String> node = new TreeNode<String>(source);
-				queue.offer(node);
-			}else{
-				TreeNode<String> node = new TreeNode<String>(source);
-				node.addChild(new TreeNode<String>(news.getSite()));
-				for (j = i + 1; j < size; j++) {
-					News news2 = list.get(j);
-					if (news2.getSource() == null) {
-						continue;  //TODO how to resolve the problem that source is null
-					} else {
-						if (news2.getSource().equals(source)) {
-							node.addChild(new TreeNode<String>(news2.getSite()));
-						}
-					}
-				}
-				i++;
-			}
-			
 		}
 	}
+
+	private void insertNode(String source, String site, List<TreeNode<String>> queue) {
+		TreeNode<String> parent;
+		TreeNode<String> child;
+		if ((parent = findNode(source, queue)) != null) {
+			parent.addChild(new TreeNode<String>(site));
+		} else if ((child = findNode(site, queue)) != null) {
+			TreeNode<String> newNode = new TreeNode<String>(site);
+			newNode.addChild(child);
+			queue.remove(child);
+			queue.add(newNode);
+		} else {
+			TreeNode<String> newNode = new TreeNode<String>(source);
+			newNode.addChild(new TreeNode<String>(site));
+			queue.add(newNode);
+		}
+	}
+
+	private TreeNode<String> findNode(String element, List<TreeNode<String>> queue) {
+		if (queue.size() != 0) {
+			for (TreeNode<String> root : queue) {
+				TreeNode<String> node =  root.traverseCompare(element);
+				if(node != null)
+					return node;
+					
+			}
+		}
+		return null;
+	}
+	/*
+	 * private void addNewNodeToQueue(String source, String site,
+	 * List<TreeNode<String>> queue) { TreeNode<String> newNode = new
+	 * TreeNode<String>(source); newNode.addChild(new TreeNode<String>(site));
+	 * queue.add(newNode); }
+	 */
 }
