@@ -124,8 +124,16 @@ public class News {
 
 	@Override
 	public String toString() {
-		return "News [id=" + id + ", site=" + site + ", source=" + source
-				+ ", title=" + title + ", publish_time=" + publish_time + "]";
+		return "News [id=" + id + ", site=" + site + ", source=" + source + ", title=" + title + "]";
 	}
 
+
+	/*@Override
+	public String toString() {
+		return "News [id=" + id + ", url=" + url + ", site=" + site + ", source=" + source + ", title=" + title
+				+ ", publish_time=" + publish_time + ", search_words=" + search_words + "]";
+	}*/
+
+	
+	
 }
