@@ -1,9 +1,6 @@
 package com.abc.controller;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,15 +17,14 @@ import com.abc.vsm.Vsm;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-/**@author yh
- * Servlet implementation class TraceToSourceServlet
+/**
+ * Servlet implementation class TreeToJson
  */
-@WebServlet(description = "no data input, but output json", urlPatterns = { "/TraceToSourceServlet" })
-public class TraceToSourceServlet extends HttpServlet {
+@WebServlet("/TreeToJsonServlet")
+public class TreeToJsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+       
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		long start = System.currentTimeMillis();
 		List<News> newsList = null;
 		String keyword = request.getParameter("keyword");
@@ -51,29 +47,14 @@ public class TraceToSourceServlet extends HttpServlet {
 			}
 		}
 		obj.put("children", array);
-		//-------------------------------------//
-		System.out.println("写入到json文件中...");
-		try {
-			String filePath = request.getServletContext().getRealPath("/flare.json");
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8"));
-			out.write(obj.toString());
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("写入完毕");
-		//-------------------------------------//
 		double time = (double) (System.currentTimeMillis() - start) / 1000;
 		System.out.println("总共" + newsList.size() + "篇文章");
 		System.out.println("总耗时" + time + "秒");
-		response.sendRedirect("demo1_1.jsp");
+		response.setContentType("application/json;charset=utf-8");
+		response.getWriter().write(obj.toString());
 	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
-	
-	
 
 }

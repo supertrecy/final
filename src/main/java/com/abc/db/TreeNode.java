@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class TreeNode<E> {
@@ -41,10 +42,19 @@ public class TreeNode<E> {
 
 	public JSONObject wholeTreeToJSON() {
 
-		Map<E, List<TreeNode<E>>> map = new HashMap<E, List<TreeNode<E>>>();
-		map.put(element, children);
-		JSONObject jsonObject = JSONObject.fromObject(map);
-		return jsonObject;
+		JSONObject root = new JSONObject();
+		root.put("name", element);
+		if(getChildrenNum() != 0){
+			JSONArray jsonChildren = new JSONArray();
+			for (TreeNode<E> child : children) {
+				JSONObject jsonChild = child.wholeTreeToJSON();
+				jsonChildren.add(jsonChild);
+			}
+			root.put("children", jsonChildren);
+		}else{
+			root.put("size",getChildrenNum());
+		}
+		return root;
 	}
 
 	public TreeNode<E> traverseCompare(E element) {
