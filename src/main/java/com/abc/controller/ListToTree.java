@@ -106,7 +106,9 @@ public class ListToTree {
 				continue; // TODO how to resolve the problem that source is null
 			} else if (site == null||"".equals(site)) {
 				continue; // TODO how to resolve the problem that site is null
-			} else {
+			}else if (site.equals(source)) {
+				continue; // TODO how to resolve the problem that site = source
+			}else{
 				// insert node to queue's tree
 				insertNode(source, site, queue);
 			}

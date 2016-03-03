@@ -1,8 +1,8 @@
 package com.abc.controller;
 
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -41,28 +41,26 @@ public class TraceToSourceServlet extends HttpServlet {
 		
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
-		obj.put("name", "本次搜索");
+		obj.put("name", keyword);
 		int i = 0;
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
-				System.out.println("第"+(++i)+"棵树");
+				System.out.println("构建第"+(++i)+"棵树");
 			}
 		}
 		obj.put("children", array);
-		//-------------------------------------//
 		System.out.println("写入到json文件中...");
 		try {
 			String filePath = request.getServletContext().getRealPath("/flare.json");
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8"));
+			PrintWriter out = new PrintWriter(new FileWriter(new File(filePath)));
 			out.write(obj.toString());
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println("写入完毕");
-		//-------------------------------------//
 		double time = (double) (System.currentTimeMillis() - start) / 1000;
 		System.out.println("总共" + newsList.size() + "篇文章");
 		System.out.println("总耗时" + time + "秒");
@@ -74,6 +72,4 @@ public class TraceToSourceServlet extends HttpServlet {
 		doGet(request, response);
 	}
 	
-	
-
 }
