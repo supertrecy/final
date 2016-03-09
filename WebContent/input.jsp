@@ -32,5 +32,12 @@ h3 {
 				type="submit">
 		</form>
 	</div>
+	<h3>DEMO3 输入关键词后实时抓取新闻的溯源结果</h3>
+	<div>
+		<form action="TraceToSourceRealTimeServlet">
+			<label>请输入关键词：</label> <input type="text" name="keyword"> <input
+				type="submit">
+		</form>
+	</div>
 </body>
 </html>
