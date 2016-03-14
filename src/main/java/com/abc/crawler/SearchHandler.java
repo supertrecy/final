@@ -32,17 +32,17 @@ public class SearchHandler {
 		LOG.info("*** 开始执行新闻(资讯)搜索");
 		
 		/* 执行抓取 */
-		Spider.create(new BaiduNewsPageProcessor())
-		.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
-		.addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
-        .thread(5)
-        .run();
-		
-		Spider.create(new BingNewsPageProcessor())
-		.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
-		.addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
-        .thread(5)
-        .run();
+//		Spider.create(new BaiduNewsPageProcessor())
+//		.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
+//		.addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
+//        .thread(5)
+//        .run();
+//		
+//		Spider.create(new BingNewsPageProcessor())
+//		.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
+//		.addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
+//        .thread(5)
+//        .run();
 		
 		Spider.create(new SogouNewsPageProcessor())
 		.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
