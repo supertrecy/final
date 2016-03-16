@@ -1,6 +1,12 @@
 package com.abc.crawler;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+
+import com.abc.db.NewsUtil;
+import com.abc.parse.HtmlParser;
+import com.abc.parse.NewsInfo;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -17,9 +23,16 @@ public class BingNewsPageProcessor implements PageProcessor {
 		List<String> links = page.getHtml().css("div.newstitle").links().all();
 		page.addTargetRequests(links);
 		String title = page.getHtml().$("title","text").toString();
-		if(!title.contains("必应News")){
+		if(!page.getUrl().toString().contains("cn.bing.com/news")){
 			System.out.println(++i+":"+title);
-			page.putField("title", title);
+			HtmlParser parser = new HtmlParser();
+			try {
+				NewsInfo news = parser.getParse(page.getRawText(), new URL(page.getUrl().toString()));
+				NewsUtil.addNews(news);
+				System.out.println(news.getTitle());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -31,16 +31,16 @@ public class HtmlParser {
 	public static Logger LOG = Logger.getLogger("com.abc.parse.HtmlParser");
 
 	public NewsInfo getParse(String content, URL url) {
-
 		String text = "";
 		NewsInfo news = new NewsInfo();
 		String extract_encoding;
 		byte[] htmlBytes = content.getBytes();
 
 		String encoding = sniffCharacterEncoding(htmlBytes);
-
+		this.parserFactory = new NewsParserFactory();
 		NewsParser newsParser = parserFactory.getNewsParser(url.toString());
 		if (newsParser == null) {
+			System.out.println("错误:找不到对应的解析器！");
 			LOG.info("错误:找不到对应的解析器！" + url.toString());
 		} else {
 			news = newsParser.getParse(content, encoding,url.toString());

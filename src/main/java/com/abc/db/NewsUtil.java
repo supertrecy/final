@@ -9,10 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.abc.parse.NewsInfo;
 import com.mysql.jdbc.PreparedStatement;
 
 public class NewsUtil {
-	public static List<News> getNewsList(){
+	public static List<News> getNewsList() {
 		List<News> newsList = new ArrayList<News>();
 		Connection con = null;
 		Statement stat = null;
@@ -20,8 +21,8 @@ public class NewsUtil {
 			con = DBHelper.getConnection();
 			stat = con.createStatement();
 			String sql = "select * from news_search_data";
-			ResultSet rs= stat.executeQuery(sql);
-			while(rs.next()){
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
 				News news = new News();
 				news.setId(rs.getInt("ID"));
 				news.setContent(rs.getString("CONTENT"));
@@ -41,8 +42,8 @@ public class NewsUtil {
 		} catch (SQLException e) {
 			System.out.println("无法创建statement");
 			e.printStackTrace();
-		}finally{
-			if(stat != null)
+		} finally {
+			if (stat != null)
 				try {
 					stat.close();
 				} catch (SQLException e) {
@@ -60,17 +61,17 @@ public class NewsUtil {
 		}
 		return newsList;
 	}
-	
-	public static Map<News,Boolean> getNewsMap(){
-		Map<News,Boolean> newsMapList = new HashMap<News, Boolean>();
+
+	public static Map<News, Boolean> getNewsMap() {
+		Map<News, Boolean> newsMapList = new HashMap<News, Boolean>();
 		Connection con = null;
 		Statement stat = null;
 		try {
 			con = DBHelper.getConnection();
 			stat = con.createStatement();
 			String sql = "select * from news_search_data";
-			ResultSet rs= stat.executeQuery(sql);
-			while(rs.next()){
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
 				News news = new News();
 				news.setId(rs.getInt("ID"));
 				news.setContent(rs.getString("CONTENT"));
@@ -90,8 +91,8 @@ public class NewsUtil {
 		} catch (SQLException e) {
 			System.out.println("无法创建statement");
 			e.printStackTrace();
-		}finally{
-			if(stat != null)
+		} finally {
+			if (stat != null)
 				try {
 					stat.close();
 				} catch (SQLException e) {
@@ -118,8 +119,8 @@ public class NewsUtil {
 			con = DBHelper.getConnection();
 			stat = (PreparedStatement) con.prepareStatement("select * from news_search_data where search_words = ?");
 			stat.setString(1, keyword);
-			ResultSet rs= stat.executeQuery();
-			while(rs.next()){
+			ResultSet rs = stat.executeQuery();
+			while (rs.next()) {
 				News news = new News();
 				news.setId(rs.getInt("ID"));
 				news.setContent(rs.getString("CONTENT"));
@@ -139,8 +140,8 @@ public class NewsUtil {
 		} catch (SQLException e) {
 			System.out.println("无法创建statement");
 			e.printStackTrace();
-		}finally{
-			if(stat != null)
+		} finally {
+			if (stat != null)
 				try {
 					stat.close();
 				} catch (SQLException e) {
@@ -157,5 +158,40 @@ public class NewsUtil {
 			}
 		}
 		return newsList;
+	}
+
+	public static boolean addNews(NewsInfo news) {
+		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT) values (?,?,?,?,?,?)";
+		PreparedStatement stat = null;
+		Connection con = null;
+		boolean result = false;
+		con = DBHelper.getConnection();
+		try {
+			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat.setString(1, news.getUrl());
+			stat.setString(2, news.getSite());
+			stat.setString(3, news.getSource());
+			stat.setString(4, news.getTitle());
+			stat.setString(5, news.getPubtime());
+			stat.setString(6, news.getContent());
+			result = stat.executeUpdate()>0?true:false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			if(con != null)
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return result;
+
 	}
 }
