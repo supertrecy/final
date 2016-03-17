@@ -26,7 +26,9 @@ public class SpecialNewsParser extends NewsParser {
 		String curTime = df.format(System.currentTimeMillis());
 		info.setFetchtime(curTime);
 		getBaseInfo(info, url, contentStr);
-
+		System.out.println(info.getSite()+":"+encoding);
+		System.out.println(info.getTitle());
+		System.out.println("-----------------------------------------------");
 		return info;
 	}
 

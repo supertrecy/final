@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.abc.crawler.extract.SearchUrlExtractor;
 
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 
 public class SearchHandler {
 
@@ -36,13 +37,13 @@ public class SearchHandler {
 
 		/* 执行抓取 */
 		Spider.create(new BaiduNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
-				.thread(5).run();
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
 		Spider.create(new BingNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
-				.thread(5).run();
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
 		Spider.create(new SogouNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
-				.thread(5).run();
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
 	}
 

@@ -160,12 +160,12 @@ public class CommonParser extends NewsParser {
 	@Override
 	public NewsInfo getParse(String content, String encoding,String url) {
 		NewsInfo info = new NewsInfo();
-		String contentStr = "";
-		try {
+		String contentStr = content;
+		/*try {
 			contentStr = new String(content.getBytes(), encoding);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}	
+		}	*/
 		
 		info.setUrl(url);
 		

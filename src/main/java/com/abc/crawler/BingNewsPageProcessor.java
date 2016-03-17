@@ -24,12 +24,11 @@ public class BingNewsPageProcessor implements PageProcessor {
 		page.addTargetRequests(links);
 		String title = page.getHtml().$("title","text").toString();
 		if(!page.getUrl().toString().contains("cn.bing.com/news")){
-			System.out.println(++i+":"+title);
+//			System.out.println(++i+":"+title);
 			HtmlParser parser = new HtmlParser();
 			try {
 				NewsInfo news = parser.getParse(page.getRawText(), new URL(page.getUrl().toString()));
 				NewsUtil.addNews(news);
-				System.out.println(news.getTitle());
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

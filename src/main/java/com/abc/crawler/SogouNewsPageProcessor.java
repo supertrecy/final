@@ -24,11 +24,11 @@ public class SogouNewsPageProcessor implements PageProcessor {
 		page.addTargetRequests(links);
 		String title = page.getHtml().$("title","text").toString();
 		if(!title.contains("搜狗新闻搜索")){
+//			System.out.println(++i+":"+title);
 			HtmlParser parser = new HtmlParser();
 			try {
 				NewsInfo news = parser.getParse(page.getRawText(), new URL(page.getUrl().toString()));
 				NewsUtil.addNews(news);
-				System.out.println(news.getTitle());
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
