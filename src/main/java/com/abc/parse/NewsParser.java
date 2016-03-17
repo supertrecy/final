@@ -1,6 +1,13 @@
-
 package com.abc.parse;
 
-public interface NewsParser {
-	public NewsInfo getParse(String content, String encoding,String url);
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+public class NewsParser {
+	protected static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
+	public NewsInfo getParse(String content, String encoding, String url) {
+		NewsInfo info = new NewsInfo();
+		return info;
+	}
 }
