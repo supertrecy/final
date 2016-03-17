@@ -35,7 +35,6 @@ public class SearchHandler {
 		LOG.info("*** 开始执行新闻(资讯)搜索");
 
 		/* 执行抓取 */
-
 		Spider.create(new BaiduNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
 				.thread(5).run();
 

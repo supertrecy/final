@@ -21,24 +21,6 @@ import org.slf4j.LoggerFactory;
 public class NewsInfoUtils {
 	public static final Logger LOG = LoggerFactory.getLogger(NewsInfoUtils.class);
 	
-	public static String extractInfo2(String content, Pattern p) {
-		String info = null;
-		Matcher matcher = p.matcher(content);
-		if (matcher.find()) { 		
-			info = matcher.group();
-		} 
-		return info;
-	}
-	
-	public static String extractInfo1(String content, Pattern p) {
-		String info = null;
-		Matcher matcher = p.matcher(content);
-		if (matcher.find()) { 		
-			info = matcher.group(1);
-		} 
-		return info;
-	}
-	
 	/**
 	 * 
 	 * @param url

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NewsParserFactory {
-	private static Map parserMap = new HashMap<String, NewsParser>();
+	private static Map<String, NewsParser> parserMap = new HashMap<String, NewsParser>();
 	private static CommonParser cp = new CommonParser();
 	
 	static {

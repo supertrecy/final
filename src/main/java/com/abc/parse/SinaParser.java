@@ -1,7 +1,5 @@
 package com.abc.parse;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,21 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 基本信息：国内、国际、社会新闻；财经（国内财经、银行）
+ * 基本信息：国内、国际、社会新闻；财经（国内财经、银行）getParse可以解析国际、国内、社会、军事四个板块的新闻
  * 评论信息：国内、国际、社会新闻
  * @author hjy
  *
  * 备注：
  * 体育类新闻source目前无法提取，可以提取到，需要再写正则表达式
  */
-public class SinaParser implements NewsParser {
+public class SinaParser extends SpecialNewsParser{
 	public static final Logger LOG = LoggerFactory.getLogger(SinaParser.class);
-	private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	public static final int maxCommentNum = 2000;
 	
 	/** Used to extract base information */
-	private static final String titleRegex = "<meta property=\"og:title\" content=\"(.*?)\""; // 标题干净
-	private static final String titleRegex2 = "<title>(.*?)</title>";
+	private static final String titleRegex2 = "<meta property=\"og:title\" content=\"(.*?)\""; // 标题干净
 	private static final String pubtimeRegex = "\\d{4}-\\d{2}-\\d{2}/\\d{4}"; // 从url中提取
 	private static final String pubtimeRegex2 = "/(\\d{8}/\\d{4})[^/]*?$"; // 财经
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
@@ -32,20 +27,18 @@ public class SinaParser implements NewsParser {
 	private static final String sourceRegex2 = "<span.*?id=\"media_name\".*?>(.*?)</span>"; // 地方，比如新浪四川
 	private static final String sourceRegex3 = "<span id=\"art_source\">(.*?)</span>";
 	
-	private static Pattern pTitle;
+	protected static String site="新浪网";
+	
 	private static Pattern pTitle2;
-	private static Pattern pPubtime;
 	private static Pattern pPubtime2;
-	private static Pattern pKeywords;
-	private static Pattern pSource;
 	private static Pattern pSource2;
 	private static Pattern pSource3;
 	
 	private static HashMap<String, String> channelMap = new HashMap<String, String>();
 	
 	static {
-		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pTitle2 = Pattern.compile(titleRegex2, Pattern.CASE_INSENSITIVE);
+		pTitle = Pattern.compile(titleRegex2, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
+		pTitle2 = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE);
 		pPubtime = Pattern.compile(pubtimeRegex, Pattern.CASE_INSENSITIVE);
 		pPubtime2 = Pattern.compile(pubtimeRegex2, Pattern.CASE_INSENSITIVE);
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);		
@@ -63,60 +56,15 @@ public class SinaParser implements NewsParser {
 		channelMap.put("jc", "军事");
 	}
 	
-	/**
-	 * 这里可以解析国际、国内、社会、军事四个板块的新闻
-	 * @param content
-	 * @param url
-	 * @return
-	 */
-	public NewsInfo getParse(String content, String encoding,String url) {
-		NewsInfo info = new NewsInfo();
-		String contentStr = "";
-		try {
-			contentStr = new String(content.getBytes(), encoding);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}	
-		info.setUrl(url);
-		
-		String curTime = df.format(System.currentTimeMillis());
-		info.setFetchtime(curTime);
-		getBaseInfo(info, url, contentStr);
-		
-		info.setComment(""); // % 暂不提取评论，二期做
-		
-		return info;
-	}
-	
-	/**
-	 * 提取基本信息
-	 * @param info
-	 * @param content
-	 */
-	private void getBaseInfo(NewsInfo info, String url, String content) {
+	@Override
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
 		String title = "";
 		String pubtime = "";
 		String keywords = "";
         String source = "";
         String plate = "";
-       
-		/* 提取标题信息 */
-		Matcher matcher = pTitle.matcher(content);
-		if (matcher.find()) {
-			title = matcher.group(1).trim();
-		} else {
-			matcher = pTitle2.matcher(content);
-			if (matcher.find()) {
-				title = matcher.group(1).trim();
-				int index = title.indexOf("_");
-				if (index != -1) {
-					title = title.substring(0, index);
-				}
-			}
-		}
-		
-		/* 提取发布时间信息 */
-		matcher = pPubtime.matcher(url);
+		/*提取新闻时间*/
+		Matcher matcher = pPubtime.matcher(url);
 		if (matcher.find()) {
 			pubtime = matcher.group().trim(); // 2014-04-28/2349格式
 			pubtime = pubtime.replace('/', ' ').replaceAll("-", "");
@@ -127,17 +75,15 @@ public class SinaParser implements NewsParser {
 				pubtime = pubtime.replace('/', ' ');
 			}
 		}
-		
-		/* 提取关键词信息 */		
-		matcher = pKeywords.matcher(content);
-		if (matcher.find()) { 
-			keywords = matcher.group(1).replace("\n", "");
-		} else {
-			keywords = "";
-		}
-		
-		/* 提取新闻来源信息 */	
-		matcher = pSource.matcher(content);
+		this.extractTitle(content, pubtime, pTitle);
+		this.extractKeywords(content, keywords, pKeywords);
+		this.extractSource(content, source, pSource);
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+	}
+
+	@Override
+	protected void extractSource(String content, String source, Pattern sourcePattern) {
+		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1);
 		} else {
@@ -151,38 +97,26 @@ public class SinaParser implements NewsParser {
 				}
 			}
 		}
-
-		info.setBaseInfo("新浪网", plate, title, pubtime, keywords, source);
 	}
-		
-	/**
-	 * 
-	 * @param content
-	 * @param regex
-	 * @return
-	 */
-	public static String extractInfo(String content, String regex) {  
-		if (content == null)   
-			return null;   
-		Pattern pattern = Pattern.compile(regex); 
-		Matcher m = pattern.matcher(content);   
-		if (!m.find()) {    
-			return null;   
-		}    
-		return m.group(1);  
-		
-	} 
+
+	@Override
+	protected void extractTitle(String content, String title, Pattern pTitle) {
+		Matcher matcher = pTitle.matcher(content);
+		if (matcher.find()) {
+			title = matcher.group(1).trim();
+		} else {
+			matcher = pTitle2.matcher(content);
+			if (matcher.find()) {
+				title = matcher.group(1).trim();
+				int index = title.indexOf("_");
+				if (index != -1) {
+					title = title.substring(0, index);
+				}
+			}
+		}
+	}
 	
-	public static String extractInfo2(String content, String regex) {  
-		if (content == null)   
-			return null;   
-		Pattern pattern = Pattern.compile(regex); 
-		Matcher m = pattern.matcher(content);   
-		if (!m.find()) {    
-			return null;   
-		}    
-		return m.group(2);  
+	
 		
-	} 
 	
 }

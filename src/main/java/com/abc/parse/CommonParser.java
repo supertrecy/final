@@ -1,8 +1,6 @@
 
 package com.abc.parse;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -18,9 +16,8 @@ import org.slf4j.LoggerFactory;
  * @author hjy
  *
  */
-public class CommonParser implements NewsParser {
+public class CommonParser extends NewsParser {
 	public static final Logger LOG = LoggerFactory.getLogger(CommonParser.class);
-	private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	/** Used to extract base information */
 	private static final String titleRegex = "<title.*?>([^<]+)</title>";
@@ -160,11 +157,7 @@ public class CommonParser implements NewsParser {
 		siteMap.put("zhuayoukong.com", "爪游控");
 	}
 	
-	/**
-	 * @param content
-	 * @param url
-	 * @return
-	 */
+	@Override
 	public NewsInfo getParse(String content, String encoding,String url) {
 		NewsInfo info = new NewsInfo();
 		String contentStr = "";
@@ -180,10 +173,11 @@ public class CommonParser implements NewsParser {
 		info.setFetchtime(curTime);
 		getBaseInfo(info, url, contentStr);
 			
+		//LOOKAT 如果搜索引擎里没有提取时间，设为空，所以要考虑如何获取搜索引擎里的时间
 		String pubtime = "todo";
-		if (pubtime == null) {
-			pubtime = "";
-		}
+		/*if (pubtime == null) {
+			pubtime = ""; ，
+		}*/
 		info.setPubtime(pubtime);
 		
 		info.setComment("");
