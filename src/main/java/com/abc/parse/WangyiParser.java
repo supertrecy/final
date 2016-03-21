@@ -23,6 +23,10 @@ public class WangyiParser extends SpecialNewsParser{
 	private static final String sourceRegex2 = "本文来源：(.*?)\\s?<";
 	private static final String sourceRegex3 = "class=\"ep-info cDGray\"><.*?>.*?<.*?>(.*?)<"; // 老版
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pTitle2;
 	private static Pattern pPubtime2;
 	private static Pattern pSource2;
@@ -40,11 +44,54 @@ public class WangyiParser extends SpecialNewsParser{
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 		pSource3 = Pattern.compile(sourceRegex3, Pattern.CASE_INSENSITIVE);
 	}
-	
-	
-	
+
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+	}
+
+	@Override
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
+		Matcher matcher = pPubtime.matcher(content);
+		if (matcher.find()) {
+			pubtime = matcher.group(1);
+			pubtime = pubtime.replaceAll("[-:]", "");
+		} else {
+			matcher = pPubtime2.matcher(content);
+			if (matcher.find()) {
+				pubtime = matcher.group(1);
+				pubtime = pubtime.replaceAll("[-:]", "");
+			}
+		}
+		return pubtime;
+	}
+
+	@Override
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
+		Matcher matcher = pTitle.matcher(content);
+		if (matcher.find()) {
+			title = matcher.group(1).trim();
+		} else {
+			matcher = pTitle2.matcher(content);
+			if (matcher.find()) {
+				title = matcher.group(1);
+	            int index = title.indexOf("_");
+	            if (index != -1) title = title.substring(0, index).trim();  
+			}
+		}
+		return title;
+	}
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1);
@@ -59,44 +106,17 @@ public class WangyiParser extends SpecialNewsParser{
 				}
 			}
 		}
+		return source;
 	}
-	
+
 	@Override
-	protected void extractKeywords(String content, String keywords, Pattern pKeywords) {
+	protected String extractKeywords(String content, Pattern pKeywords) {
+		String keywords = "";
 		Matcher matcher = pKeywords.matcher(content);
 		if (matcher.find()) { 
 			keywords = matcher.group(1); 
 		}
-	}
-
-	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
-		Matcher matcher = pPubtime.matcher(content);
-		if (matcher.find()) {
-			pubtime = matcher.group(1);
-			pubtime = pubtime.replaceAll("[-:]", "");
-		} else {
-			matcher = pPubtime2.matcher(content);
-			if (matcher.find()) {
-				pubtime = matcher.group(1);
-				pubtime = pubtime.replaceAll("[-:]", "");
-			}
-		}
-	}
-
-	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
-		Matcher matcher = pTitle.matcher(content);
-		if (matcher.find()) {
-			title = matcher.group(1).trim();
-		} else {
-			matcher = pTitle2.matcher(content);
-			if (matcher.find()) {
-				title = matcher.group(1);
-	            int index = title.indexOf("_");
-	            if (index != -1) title = title.substring(0, index).trim();  
-			}
-		}
+		return keywords;
 	}
 	
 	

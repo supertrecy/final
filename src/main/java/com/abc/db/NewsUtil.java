@@ -161,7 +161,7 @@ public class NewsUtil {
 	}
 
 	public static boolean addNews(NewsInfo news) {
-		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT) values (?,?,?,?,?,?)";
+		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT,KEYWORDS,FETCH_TIME) values (?,?,?,?,?,?,?,?)";
 		PreparedStatement stat = null;
 		Connection con = null;
 		boolean result = false;
@@ -174,6 +174,8 @@ public class NewsUtil {
 			stat.setString(4, news.getTitle());
 			stat.setString(5, news.getPubtime());
 			stat.setString(6, news.getContent());
+			stat.setString(7, news.getKeywords());
+			stat.setString(8, news.getFetchtime());
 			result = stat.executeUpdate()>0?true:false;
 		} catch (SQLException e) {
 			e.printStackTrace();

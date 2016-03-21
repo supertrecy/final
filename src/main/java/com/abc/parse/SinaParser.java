@@ -29,6 +29,10 @@ public class SinaParser extends SpecialNewsParser{
 	
 	protected static String site="新浪网";
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pTitle2;
 	private static Pattern pPubtime2;
 	private static Pattern pSource2;
@@ -75,14 +79,35 @@ public class SinaParser extends SpecialNewsParser{
 				pubtime = pubtime.replace('/', ' ');
 			}
 		}
-		this.extractTitle(content, pubtime, pTitle);
-		this.extractKeywords(content, keywords, pKeywords);
-		this.extractSource(content, source, pSource);
+		title = this.extractTitle(content, pTitle);
+		keywords = this.extractKeywords(content, pKeywords);
+		source = this.extractSource(content, pSource);
 		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
+
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
+		Matcher matcher = pTitle.matcher(content);
+		if (matcher.find()) {
+			title = matcher.group(1).trim();
+		} else {
+			matcher = pTitle2.matcher(content);
+			if (matcher.find()) {
+				title = matcher.group(1).trim();
+				int index = title.indexOf("_");
+				if (index != -1) {
+					title = title.substring(0, index);
+				}
+			}
+		}
+		return title;
+	}
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1);
@@ -97,26 +122,8 @@ public class SinaParser extends SpecialNewsParser{
 				}
 			}
 		}
+		return source;
 	}
 
-	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
-		Matcher matcher = pTitle.matcher(content);
-		if (matcher.find()) {
-			title = matcher.group(1).trim();
-		} else {
-			matcher = pTitle2.matcher(content);
-			if (matcher.find()) {
-				title = matcher.group(1).trim();
-				int index = title.indexOf("_");
-				if (index != -1) {
-					title = title.substring(0, index);
-				}
-			}
-		}
-	}
-	
-	
-		
 	
 }

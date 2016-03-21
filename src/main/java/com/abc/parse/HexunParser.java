@@ -18,6 +18,11 @@ public class HexunParser extends SpecialNewsParser {
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
 	private static final String sourceRegex = "来源：(?:</span>)?<a.*?>(.*?)</a>";
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
+	
 	protected static String site="和讯";
 	
 	static {
@@ -27,8 +32,20 @@ public class HexunParser extends SpecialNewsParser {
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 	}
 
+	
 	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+	}
+
+	@Override
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
 		Matcher matcher = pPubtime.matcher(content);
 		if (matcher.find()) {
 			pubtime = matcher.group(1).trim(); // 2014年05月08日15:37
@@ -38,11 +55,12 @@ public class HexunParser extends SpecialNewsParser {
 				pubtime = pubtime.substring(0, 13);
 			}
 		}
+		return pubtime;
 	}
 
-
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group(1).trim();
@@ -51,7 +69,6 @@ public class HexunParser extends SpecialNewsParser {
             	title = title.substring(0, index);      	
             }
 		}
+		return title;
 	}
-	
-	
 }

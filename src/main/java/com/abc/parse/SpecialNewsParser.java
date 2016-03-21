@@ -7,73 +7,53 @@ public class SpecialNewsParser extends NewsParser {
 
 	protected static final String titleRegex = "<title>(.*?)</title>";
 	protected static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
-	protected static String site;
-	protected static Pattern pTitle;
-	protected static Pattern pPubtime;
-	protected static Pattern pKeywords;
-	protected static Pattern pSource;
-	
+
 	public NewsInfo getParse(String content, String encoding, String url) {
 		NewsInfo info = new NewsInfo();
-		String contentStr = "";
-		try {
-			contentStr = new String(content.getBytes(), encoding);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
 		info.setUrl(url);
-
 		String curTime = df.format(System.currentTimeMillis());
 		info.setFetchtime(curTime);
-		getBaseInfo(info, url, contentStr);
-		System.out.println(info.getSite()+":"+encoding);
-		System.out.println(info.getTitle());
-		System.out.println("-----------------------------------------------");
+		getBaseInfo(info, url, content);
 		return info;
 	}
 
 	protected void getBaseInfo(NewsInfo info, String url, String content) {
-		String title = "";
-		String pubtime = "";
-		String keywords = "";
-        String source = "";
-        String plate = "";
-		this.extractTitle(content, pubtime, pTitle);
-		this.extractPubTime(content, pubtime, pPubtime);
-		this.extractKeywords(content, keywords, pKeywords);
-		this.extractSource(content, source, pSource);
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 
 	}
 
 	/*
 	 * 提取新闻关键词
 	 */
-	protected void extractKeywords(String content, String keywords, Pattern pKeywords) {
+	protected String extractKeywords(String content, Pattern pKeywords) {
 		Matcher matcher = pKeywords.matcher(content);
+		String keywords = "";
 		if (matcher.find()) {
 			keywords = matcher.group(1).replace("\n", "");
 		} else {
 			keywords = "";
 		}
+		return keywords;
 	}
 
 	/*
 	 * 提取发布时间
 	 */
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
+	protected String extractPubTime(String content, Pattern pPubtime) {
 		Matcher matcher = pPubtime.matcher(content);
+		String pubtime = "";
 		if (matcher.find()) {
 			pubtime = matcher.group(1).trim(); // 2014-05-08 06:52
 			pubtime = pubtime.replaceAll("-", "").replace(":", "");
 		}
+		return pubtime;
 	}
-	
+
 	/*
 	 * 提取新闻标题
 	 */
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
 		Matcher matcher = pTitle.matcher(content);
+		String title = "";
 		if (matcher.find()) {
 			title = matcher.group(1);
 			int index = title.indexOf("_");
@@ -81,15 +61,19 @@ public class SpecialNewsParser extends NewsParser {
 				title = title.substring(0, index).trim();
 			}
 		}
+		return title;
+
 	}
 
 	/*
 	 * 提取新闻来源信息
 	 */
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
+	protected String extractSource(String content, Pattern sourcePattern) {
 		Matcher matcher = sourcePattern.matcher(content);
+		String source = "";
 		if (matcher.find()) {
 			source = matcher.group(1);
 		}
+		return source;
 	}
 }

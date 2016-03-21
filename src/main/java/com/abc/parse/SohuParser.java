@@ -20,6 +20,10 @@ public class SohuParser extends SpecialNewsParser{
 	private static final String keywordsRegex = "<meta name=\"keywords\" content=\"(.*?)\"";
 	private static final String sourceRegex = "来源：<span id=\"media_span\".*?>(?:<.*?>)?(.*?)<";
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pTitle2;
 	
 	protected static String site="搜狐网";
@@ -31,18 +35,20 @@ public class SohuParser extends SpecialNewsParser{
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE);		
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 	}
-	
+
 	@Override
-	protected void extractKeywords(String content, String keywords, Pattern pKeywords) {
-		Matcher matcher = pKeywords.matcher(content);
-		if (matcher.find()) { 
-			keywords = matcher.group(1); 
-		}
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
-
 	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
 		Matcher matcher = pPubtime.matcher(content);
 		if (matcher.find()) {
 			pubtime = matcher.group(1);
@@ -51,11 +57,12 @@ public class SohuParser extends SpecialNewsParser{
 						pubtime.substring(8,10) + " " + pubtime.substring(11).replace(":", ""); 
 			}	
 		}
+		return pubtime;
 	}
 
-
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group(1).trim();
@@ -68,8 +75,18 @@ public class SohuParser extends SpecialNewsParser{
 		            title = title.substring(0, index).trim();      	
 			}
 		}
+		return title;
 	}
-	
-	
+
+
+	@Override
+	protected String extractKeywords(String content, Pattern pKeywords) {
+		String keywords = "";
+		Matcher matcher = pKeywords.matcher(content);
+		if (matcher.find()) { 
+			keywords = matcher.group(1); 
+		}	
+		return keywords;
+	}
 	
 }

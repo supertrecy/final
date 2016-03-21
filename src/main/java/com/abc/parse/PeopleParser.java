@@ -20,10 +20,14 @@ public class PeopleParser extends SpecialNewsParser {
 	private static final String sourceRegex2 = "<meta name=\"source\" content=\"(.*?)\">";
 	private static final String sourceRegex3 = "来源：(.*?)\\s";
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pSource2;
 	private static Pattern pSource3;
 	
-	protected static String site="人民网";
+	protected String site="人民网";
 	
 	static {
 		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
@@ -33,9 +37,50 @@ public class PeopleParser extends SpecialNewsParser {
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 		pSource3 = Pattern.compile(sourceRegex3, Pattern.CASE_INSENSITIVE);
 	}
+	
+	@Override
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+	}
 
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
+		Matcher matcher = pPubtime.matcher(content);
+		if (matcher.find()) {
+			pubtime = matcher.group(1).trim(); // 2014年05月08日13:14
+			pubtime = pubtime.replace("年", "").replace("月", "").replace("日", " ").replace(":", "");
+		}
+		return pubtime;
+	}
+
+	@Override
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
+		Matcher matcher = pTitle.matcher(content);
+		if (matcher.find()) {
+			title = matcher.group(1).trim();
+			title = title.replaceAll("&nbsp;", "");
+            int index = title.indexOf("--");
+            if (index != -1) {
+            	title = title.substring(0, index);      	
+            }
+            index = title.indexOf("――");
+            if (index != -1) {
+            	title = title.substring(0, index);      	
+            }
+		}
+		return title;
+	}
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1).trim();
@@ -55,34 +100,7 @@ public class PeopleParser extends SpecialNewsParser {
 		if (index != -1) {
 			source = source.substring(0, index);
 		}
+		return source;
 	}
 
-	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
-		Matcher matcher = pPubtime.matcher(content);
-		if (matcher.find()) {
-			pubtime = matcher.group(1).trim(); // 2014年05月08日13:14
-			pubtime = pubtime.replace("年", "").replace("月", "").replace("日", " ").replace(":", "");
-		}
-	}
-
-	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
-		 Matcher matcher = pTitle.matcher(content);
-			if (matcher.find()) {
-				title = matcher.group(1).trim();
-				title = title.replaceAll("&nbsp;", "");
-	            int index = title.indexOf("--");
-	            if (index != -1) {
-	            	title = title.substring(0, index);      	
-	            }
-	            index = title.indexOf("――");
-	            if (index != -1) {
-	            	title = title.substring(0, index);      	
-	            }
-			}
-	}
-	
-	
-	
 }

@@ -21,6 +21,8 @@ public class SichuanolParser extends SpecialNewsParser {
 	private static final String timeSource3 = "<span id=\"pubtime_baidu\">(\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{1,2}:" +
 			"\\d{1,2})</span>.*?<span.*?>(?:<a.*?>)?(.*?)<";
 	
+	private static Pattern pTitle;
+	private static Pattern pKeywords;
 	private static Pattern pTimeSource;
 	private static Pattern pTimeSource2;
 	private static Pattern pTimeSource3;
@@ -71,9 +73,9 @@ public class SichuanolParser extends SpecialNewsParser {
 			}
 		}
 		source = source.replace("来源：", "");
-		
-		this.extractTitle(content, title, pTitle);
-		this.extractKeywords(content, keywords, pKeywords);
+		title = this.extractTitle(content, pTitle);
+		keywords = this.extractKeywords(content, pKeywords);
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 	
@@ -121,18 +123,10 @@ public class SichuanolParser extends SpecialNewsParser {
 		}
 	}
 
-	@Override
-	protected void extractKeywords(String content, String keywords, Pattern pKeywords) {
-		Matcher matcher = pKeywords.matcher(content);
-		if (matcher.find()) { 
-			keywords = matcher.group(1).replace("\n", "").trim();
-		} else {
-			keywords = "";
-		}
-	}
 
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group(1);
@@ -149,9 +143,21 @@ public class SichuanolParser extends SpecialNewsParser {
             	title = title.substring(0, index).trim(); 
             }
 		}
+		return title;
 	}
-	
-	
+
+
+	@Override
+	protected String extractKeywords(String content, Pattern pKeywords) {
+		String keywords = "";
+		Matcher matcher = pKeywords.matcher(content);
+		if (matcher.find()) { 
+			keywords = matcher.group(1).replace("\n", "").trim();
+		} else {
+			keywords = "";
+		}
+		return keywords;
+	}
 	
 	
 	

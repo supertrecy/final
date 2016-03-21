@@ -79,6 +79,8 @@ public class NewsInfo  {
 	
 	public void setLastUpdateTime(String time) { this.lastUpdateTime = time; }
 	
+	public void setSource(String source) {this.source = source;}
+
 	public void setBaseInfo(String site, String plate, String title, String pubtime, 
 			String keywords, String source) {
 		this.site = site;

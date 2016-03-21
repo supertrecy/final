@@ -22,7 +22,7 @@ public class CommonParser extends NewsParser {
 	/** Used to extract base information */
 	private static final String titleRegex = "<title.*?>([^<]+)</title>";
 	private static final String keywordsRegex = "<meta.*?name=\"?keywords\"?.*?content=\"?(.*?)[\"/]";
-	private static final String sourceRegex = "(?:来源|来源于|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
+	private static final String sourceRegex = "(?:来源|来源于|稿源|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
 	private static final String sourceRegex2 = "(?:来源|来自)[：:\\s]\\s*?(.*?)\\s*?[<&\\)）]"; // 纯文字                                                                                                                       
 	private static final String sourceRegex3 = "<meta name=\"source\" content=\"(.*?)\">"; // 央视网
 	

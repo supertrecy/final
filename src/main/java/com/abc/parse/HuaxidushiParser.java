@@ -17,29 +17,33 @@ public class HuaxidushiParser extends SpecialNewsParser {
 	/** Used to extract base information */
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
 
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
+	
 	protected static String site = "华西都市报";
 
 	static {
 		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE);
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE);
 	}
-
+	
 	@Override
 	protected void getBaseInfo(NewsInfo info, String url, String content) {
-		String title = "";
-		String pubtime = "";
-		String keywords = "";
+		String title = this.extractTitle(content, pTitle);
+		String pubtime ="";
+		String keywords = this.extractKeywords(content, pKeywords);
 		String source = "";
 		String plate = "";
-
-		this.extractTitle(content, title, pTitle);
-		this.extractKeywords(content, keywords, pKeywords);
 		// LOOKAT 没有来源和时间，提取不到？
 		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
+
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group(1).trim();
@@ -48,6 +52,8 @@ public class HuaxidushiParser extends SpecialNewsParser {
 				title = title.substring(0, index);
 			}
 		}
+		return title;
 	}
+
 
 }

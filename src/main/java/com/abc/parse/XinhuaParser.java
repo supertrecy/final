@@ -8,33 +8,38 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 新华网新闻解析
+ * 
  * @author hjy
  */
-public class XinhuaParser extends SpecialNewsParser{
+public class XinhuaParser extends SpecialNewsParser {
 	public static final Logger LOG = LoggerFactory.getLogger(XinhuaParser.class);
-	
+
 	/** Used to extract base information */
 	private static final String titleRegex2 = "<td height=\"39\" align=\"center\" valign=\"bottom\" class=\"bt\">(.*?)</td>";
 	private static final String pubtimeRegex = "<span id=\"pubtime\">(.*?)</span>";
-	private static final String pubtimeRegex2 = "\\d{4}-\\d{2}/\\d{2}"; 
+	private static final String pubtimeRegex2 = "\\d{4}-\\d{2}/\\d{2}";
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
 	private static final String sourceRegex = "<span id=\"source\">\\s*来源：(.*?)</span>";
 	private static final String sourceRegex2 = "来源：\\s*(?:<a.*?>)?(.*?)</"; // 地方频道
-	
+
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pTitle2;
 	private static Pattern pPubtime2;
 	private static Pattern pSource2;
 
-	protected static String site = "新华网";
-	
+	protected String site = "新华网";
+
 	static {
-		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pTitle2 = Pattern.compile(titleRegex2, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pPubtime = Pattern.compile(pubtimeRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pPubtime2 = Pattern.compile(pubtimeRegex2, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);		
-		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
+		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pTitle2 = Pattern.compile(titleRegex2, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pPubtime = Pattern.compile(pubtimeRegex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pPubtime2 = Pattern.compile(pubtimeRegex2, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	}
 
 	@Override
@@ -42,11 +47,11 @@ public class XinhuaParser extends SpecialNewsParser{
 		String title = "";
 		String pubtime = "";
 		String keywords = "";
-        String source = "";
-        String plate = "";
-        
+		String source = "";
+		String plate = "";
+
 		/* 提取发布时间信息 */
-        Matcher matcher = pPubtime.matcher(content);
+		Matcher matcher = pPubtime.matcher(content);
 		if (matcher.find()) {
 			pubtime = matcher.group(1).trim(); // 2014年05月08日 15:20:51
 			pubtime = pubtime.replace("年", "").replace("月", "").replace("日", "").replace(":", "");
@@ -61,24 +66,43 @@ public class XinhuaParser extends SpecialNewsParser{
 			if (matcher.find()) {
 				title = matcher.group(1).trim();
 			}
-			
+
 			matcher = pPubtime2.matcher(url);
 			if (matcher.find()) {
 				pubtime = matcher.group().trim();
 				pubtime = pubtime.replace("/", "-");
 			}
 		}
-		
-		this.extractTitle(content, title, pTitle);
-		this.extractKeywords(content, keywords, pKeywords);
-		this.extractSource(content, source, pSource);
+
+		title = this.extractTitle(content, pTitle);
+		keywords = this.extractKeywords(content, pKeywords);
+		source = this.extractSource(content, pSource);
 		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
+		Matcher matcher = pTitle.matcher(content);
+		if (matcher.find()) {
+			title = matcher.group(1).trim();
+			int index = title.indexOf("-");
+			if (index != -1) {
+				title = title.substring(0, index);
+			}
+			index = title.indexOf("_");
+			if (index != -1) {
+				title = title.substring(0, index);
+			}
+		}
+		return title;
+	}
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
 		Matcher matcher = sourcePattern.matcher(content);
-		if (matcher.find()) { 
+		if (matcher.find()) {
 			source = matcher.group(1).trim();
 		} else {
 			matcher = pSource2.matcher(content);
@@ -87,22 +111,7 @@ public class XinhuaParser extends SpecialNewsParser{
 			}
 		}
 		source = source.replaceAll("&nbsp;", "").trim();
+		return source;
 	}
 
-	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
-		Matcher matcher = pTitle.matcher(content);
-		if (matcher.find()) {
-			title = matcher.group(1).trim();
-            int index = title.indexOf("-");
-            if (index != -1) {
-            	title = title.substring(0, index);      	
-            }
-            index = title.indexOf("_");
-            if (index != -1) {
-            	title = title.substring(0, index);      	
-            }
-		}
-	}
-	
 }

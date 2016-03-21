@@ -21,6 +21,10 @@ public class JingyingParser extends SpecialNewsParser{
 	private static final String sourceRegex = "来源：<a.*?>(.*?)</a>";
 	private static final String sourceRegex2 = "来源:(.*?)&nbsp"; // 四川地方频道
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pPubtime2;
 	private static Pattern pSource2;
 	
@@ -35,21 +39,20 @@ public class JingyingParser extends SpecialNewsParser{
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 	}
 
-
+	
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
-		Matcher matcher = sourcePattern.matcher(content);
-		if (matcher.find()) { 
-			source = matcher.group(1).trim();
-		} else {
-			matcher = pSource2.matcher(content);
-			if (matcher.find())
-				source = matcher.group(1).trim();
-		}
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
 	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
 		Matcher matcher = pPubtime.matcher(content);
 		if (matcher.find()) {
 			pubtime = matcher.group(1).trim(); // 2014-05-08 06:52
@@ -61,10 +64,12 @@ public class JingyingParser extends SpecialNewsParser{
 				pubtime = pubtime.replaceAll("-", "").replace(":", "");
 			}
 		}
+		return pubtime;
 	}
 
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group(1);
@@ -76,7 +81,22 @@ public class JingyingParser extends SpecialNewsParser{
             	if (index != -1) title = title.substring(0, index).trim();  
             }
 		}
+		return title;
 	}
-		
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
+		Matcher matcher = sourcePattern.matcher(content);
+		if (matcher.find()) { 
+			source = matcher.group(1).trim();
+		} else {
+			matcher = pSource2.matcher(content);
+			if (matcher.find())
+				source = matcher.group(1).trim();
+		}
+		return source;
+	}
+
 	
 }

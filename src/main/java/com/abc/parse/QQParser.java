@@ -23,6 +23,10 @@ public class QQParser extends SpecialNewsParser {
 	private static final String sourceRegex = "jgname\"><.*?>(.*?)<";
 	private static final String sourceRegex2 = "<span class=\"where\">(.*?)</span>";
 	
+	private static Pattern pTitle;
+	private static Pattern pPubtime;
+	private static Pattern pKeywords;
+	private static Pattern pSource;
 	private static Pattern pSource2;
 	
 	protected static String site="腾讯网";
@@ -36,28 +40,18 @@ public class QQParser extends SpecialNewsParser {
 	}
 	
 	@Override
-	protected void extractSource(String content, String source, Pattern sourcePattern) {
-		Matcher matcher = sourcePattern.matcher(content);
-		if (matcher.find()) { 
-			source = matcher.group(1);
-		} else {
-			matcher = pSource2.matcher(content);
-			if (matcher.find()) { 
-				source = matcher.group(1);
-			}
-		}
+	protected void getBaseInfo(NewsInfo info, String url, String content) {
+		String title = this.extractTitle(content, pTitle);
+		String pubtime = this.extractPubTime(content, pPubtime);
+		String keywords = this.extractKeywords(content, pKeywords);
+		String source = this.extractSource(content, pSource);
+		String plate = "";
+		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
 	}
 
 	@Override
-	protected void extractKeywords(String content, String keywords, Pattern pKeywords) {
-		Matcher matcher = pKeywords.matcher(content);
-		if (matcher.find()) { 
-			keywords = matcher.group(1); 
-		}
-	}
-
-	@Override
-	protected void extractPubTime(String content, String pubtime, Pattern pPubtime) {
+	protected String extractPubTime(String content, Pattern pPubtime) {
+		String pubtime = "";
 		Matcher matcher = pPubtime.matcher(content);
 		if (matcher.find()) {
 			pubtime = matcher.group(1);
@@ -65,10 +59,12 @@ public class QQParser extends SpecialNewsParser {
 			if (pubtime.indexOf("年") != -1) // 一些图片新闻是2014年05月06日 09:28形式
 				pubtime = pubtime.replace("年", "").replace("月", "").replace("日", " ").replace(":", " ");
 		}
+		return pubtime;
 	}
 
 	@Override
-	protected void extractTitle(String content, String title, Pattern pTitle) {
+	protected String extractTitle(String content, Pattern pTitle) {
+		String title = "";
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			title = matcher.group();
@@ -79,8 +75,32 @@ public class QQParser extends SpecialNewsParser {
             	title = title.substring(0, index);      	
             }
 		}
+		return title;
 	}
-	
-	
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		String source = "";
+		Matcher matcher = sourcePattern.matcher(content);
+		if (matcher.find()) { 
+			source = matcher.group(1);
+		} else {
+			matcher = pSource2.matcher(content);
+			if (matcher.find()) { 
+				source = matcher.group(1);
+			}
+		}
+		return source;
+	}
+
+	@Override
+	protected String extractKeywords(String content, Pattern pKeywords) {
+		String keywords = "";
+		Matcher matcher = pKeywords.matcher(content);
+		if (matcher.find()) { 
+			keywords = matcher.group(1); 
+		}
+		return keywords;
+	}
 	
 }

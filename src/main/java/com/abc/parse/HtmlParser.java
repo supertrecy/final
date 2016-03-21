@@ -43,10 +43,10 @@ public class HtmlParser {
 			System.out.println("错误:找不到对应的解析器！");
 			LOG.info("错误:找不到对应的解析器！" + url.toString());
 		} else {
-			news = newsParser.getParse(content, encoding,url.toString());
+			news = newsParser.getParse(content, encoding, url.toString());
 			/* 若时间提取不出(比如可能是15个站点其它板块的页面)，则采用搜索引擎所得结果 */
 			/* 发布时间之间采用从搜索引擎提取到的时间 */ // TODO
-			news.setPubtime("todo");
+			// news.setPubtime("todo");
 			try {
 				// 存储网页原始文本
 				news.setRawContent(new String(htmlBytes, encoding));
@@ -56,7 +56,7 @@ public class HtmlParser {
 		}
 		extract_encoding = encoding; // 提取正文时使用
 		/* 若是论坛，只使用BlockAlgorithms */
-		text = DOMExtractor.getMainContent(htmlBytes, extract_encoding, url.toString());
+		text = DOMExtractor.getMainContent(content, url.toString());
 		if (text == null || text.length() < minBodyLength) {
 			text = "";
 		} else {
@@ -80,13 +80,19 @@ public class HtmlParser {
 		if ("".equals(text)) {
 			LOG.info("第一种算法提取正文失败，改用第二种算法！");
 			try {
-				text = BlockAlgoExtractor.parse(new String(content.getBytes(), extract_encoding));
+				text = BlockAlgoExtractor.parse(content);
 			} catch (Exception e) {
+				LOG.info("第一种算法提取正文失败，改用第二种算法！");
 			}
 			if (text == null)
 				text = "";
 		}
 		news.setContent(text);
+		if (news.getSource() == null || "".equals(news.getSource())) {
+			String source = ParseUtil.parseNewsSource(content);
+			LOG.info("再次尝试提取来源："+source);
+			news.setSource(source);
+		}
 		return news;
 	}
 
