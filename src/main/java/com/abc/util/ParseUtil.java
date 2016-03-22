@@ -19,9 +19,9 @@ public class ParseUtil {
 		
 		String s = source.get(0).nextElementSibling().text();
 		if(s!=null){
-			s.substring(s.lastIndexOf(">")+1);
+			s = s.substring(s.lastIndexOf(">")+1);
 			if(s.lastIndexOf("<")!=-1)
-				s.substring(0,s.lastIndexOf("<")-1);
+				s = s.substring(0,s.lastIndexOf("<")-1);
 			return s;
 		}
 		return "";

@@ -50,7 +50,7 @@ public class SearchHandler {
 	}
 	
 	public static void main(String[] args) {
-		String keywords = "凤姐称因丑没男友";
+		String keywords = "荒野猎人";
 		SearchHandler sh = new SearchHandler();
 		sh.startNewsSearch(sh.normalizeKeyword(keywords));
 	}

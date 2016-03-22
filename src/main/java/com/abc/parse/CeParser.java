@@ -36,6 +36,7 @@ public class CeParser extends SpecialNewsParser {
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE);
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
+		
 	}
 
 	@Override

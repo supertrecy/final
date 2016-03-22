@@ -26,6 +26,7 @@ public class FilterUtil {
 		if (!containKeywords(content, wordSegmentation(filterWords))) {
 			//System.out.println(content);  //TODO 还是会漏掉相关的，可以和标题一起筛选查看是否是标题党
 			//System.out.println("--------------------------------------------------");
+			return null;
 		}
 
 		/*过滤发布时间，如果需要的话格式化*/
@@ -71,8 +72,12 @@ public class FilterUtil {
 			System.out.println(info.getSite()+":"+source+" 提取失败" + "：" + info.getUrl());
 			info.setSource(source);
 		} 
+		
+		source = source.replaceAll("[\\\\,;>： :<\"“”]", "");
+		info.setSource(source);
 		if (source.length() > 10)
 			info.setSource(""); // source长度过长，肯定是提取失败
+		
 
 		/*过滤关键词keywords*/
 		String webword = info.getKeywords();

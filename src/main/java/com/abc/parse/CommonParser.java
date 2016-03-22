@@ -43,7 +43,7 @@ public class CommonParser extends NewsParser {
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 		pSource3 = Pattern.compile(sourceRegex3, Pattern.CASE_INSENSITIVE);
-		
+
 		siteMap.put("10jqka.com.cn", "同花顺");
 		siteMap.put("16hour.cn", "16小时网");
 		siteMap.put("202.123.110.3", "中央政府门户网站");
@@ -284,8 +284,14 @@ public class CommonParser extends NewsParser {
 			}
 		}
 		// 全角空格通过trim()去除不了，也无法通过source.indexOf(" ")找到
+		if(source!=null){
+			source = source.substring(source.lastIndexOf(">")+1);
+			if(source.lastIndexOf("<")!=-1)
+				source = source.substring(0,source.lastIndexOf("<")-1);
+		}
 		source = source.replace((char)12288, ' ').trim(); // 将全角空格替换为普通空格
 		source = source.replace("[", "").replace("]", "").replace("作者：", "").replaceAll("&nbsp;", "").trim();
+		
 		
 		/* 格式化来源信息 */
 		int index = -1;
