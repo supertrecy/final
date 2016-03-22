@@ -1,6 +1,7 @@
 package com.abc.crawler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,26 +32,34 @@ public class SearchHandler {
 		}
 		String query = sb.substring(0, sb.length() - 1);
 		LOG.info("*** 当前处理新闻搜索任务的词组：" + query);
-		/************ 获取搜索引擎返回结果 **************/
-		/************ 在此指定各类搜索方式 **************/
 		LOG.info("*** 开始执行新闻(资讯)搜索");
 
 		/* 执行抓取 */
-		Spider.create(new BaiduNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
+		Spider.create(new BaiduNewsPageProcessor().setSearchWords(search_words))
+				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
-		Spider.create(new BingNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
+		Spider.create(new BingNewsPageProcessor().setSearchWords(search_words))
+				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
-		Spider.create(new SogouNewsPageProcessor()).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
+		Spider.create(new SogouNewsPageProcessor().setSearchWords(search_words))
+				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
 
 	}
-
+	
 	public static void main(String[] args) {
-		List<String> kwords = new ArrayList<>();
-		kwords.add("习近平");
-		new SearchHandler().startNewsSearch(kwords);
+		String keywords = "凤姐称因丑没男友";
+		SearchHandler sh = new SearchHandler();
+		sh.startNewsSearch(sh.normalizeKeyword(keywords));
+	}
+
+	private ArrayList<String> normalizeKeyword(String keyword) {
+		String[] split = keyword.split("[\\|,; ]");
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(Arrays.asList(split));
+		return list;
 	}
 
 }

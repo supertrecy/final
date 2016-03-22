@@ -3,6 +3,9 @@ package com.abc.parse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.abc.db.NewsInfo;
+import com.abc.util.ParseUtil;
+
 public class SpecialNewsParser extends NewsParser {
 
 	protected static final String titleRegex = "<title>(.*?)</title>";
@@ -14,6 +17,11 @@ public class SpecialNewsParser extends NewsParser {
 		String curTime = df.format(System.currentTimeMillis());
 		info.setFetchtime(curTime);
 		getBaseInfo(info, url, content);
+//		if (info.getSource() == null || "".equals(info.getSource())) {
+//			System.out.println("提取失败"+"："+info.getUrl());
+//		}else{
+//			System.out.println(info.getSite()+"："+info.getSource());
+//		}
 		return info;
 	}
 

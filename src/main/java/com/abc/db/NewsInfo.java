@@ -1,4 +1,4 @@
-package com.abc.parse;
+package com.abc.db;
 
 public class NewsInfo  {
 	public static final String DIR_NAME = "news_info";
@@ -80,6 +80,16 @@ public class NewsInfo  {
 	public void setLastUpdateTime(String time) { this.lastUpdateTime = time; }
 	
 	public void setSource(String source) {this.source = source;}
+	
+	public String getRawcontent() {return rawcontent;}
+
+	public void setRawcontent(String rawcontent) {this.rawcontent = rawcontent;}
+
+	public void setSite(String site) {this.site = site;}
+
+	public void setTitle(String title) {this.title = title;}
+
+	public void setKeywords(String keywords) {this.keywords = keywords;}
 
 	public void setBaseInfo(String site, String plate, String title, String pubtime, 
 			String keywords, String source) {

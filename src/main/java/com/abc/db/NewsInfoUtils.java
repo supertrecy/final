@@ -1,4 +1,4 @@
-package com.abc.parse;
+package com.abc.db;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

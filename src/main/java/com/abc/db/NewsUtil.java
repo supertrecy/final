@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.abc.parse.NewsInfo;
 import com.mysql.jdbc.PreparedStatement;
 
 public class NewsUtil {

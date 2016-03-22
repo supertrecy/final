@@ -1,7 +1,7 @@
 package com.abc.crawler;
 
+import com.abc.db.NewsInfo;
 import com.abc.db.NewsUtil;
-import com.abc.parse.NewsInfo;
 
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.PageModelPipeline;

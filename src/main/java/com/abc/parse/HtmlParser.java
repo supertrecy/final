@@ -1,62 +1,46 @@
 package com.abc.parse;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.abc.db.NewsInfo;
+import com.abc.util.FilterUtil;
 
 import ntci.body.extractor.algorithm.BlockAlgoExtractor;
 import ntci.body.extractor.algorithm.DOMExtractor;
 
 public class HtmlParser {
 
-	// I used 1000 bytes at first, but found that some documents have
-	// meta tag well past the first 1000 bytes.
-	// (e.g. http://cn.promo.yahoo.com/customcare/music.html)
-	private static final int CHUNK_SIZE = 2000;
-
-	// NUTCH-1006 Meta equiv with single quotes not accepted
-	private static Pattern metaPattern = Pattern.compile("<meta\\s+([^>]*http-equiv=(\"|')?content-type(\"|')?[^>]*)>",
-			Pattern.CASE_INSENSITIVE);
-	private static Pattern charsetPattern = Pattern.compile("charset=\\s*([a-z][_\\-0-9a-z]*)",
-			Pattern.CASE_INSENSITIVE);
-	private static Pattern ntci_charsetPattern = Pattern.compile("<meta charset=\\s?\"(.*?)\"");
-
 	private NewsParserFactory parserFactory;
 	private int minBodyLength; // 正文最小长度阈值
-	// added end
-
+	
 	public static Logger LOG = Logger.getLogger("com.abc.parse.HtmlParser");
 
-	public NewsInfo getParse(String content, URL url) {
+	public NewsInfo getParse(List<String> search_words, String html, URL url) {
+		/*在解析前过滤，剔除无效的新闻*/
+		FilterUtil.filterBeforeParse(url.toString(), html, search_words);
+		
+		/*开始解析,先解析到新闻除了正文的基本信息*/
 		String text = "";
-		NewsInfo news = new NewsInfo();
-		String extract_encoding;
-		byte[] htmlBytes = content.getBytes();
-
-		String encoding = sniffCharacterEncoding(htmlBytes);
+		NewsInfo info = new NewsInfo();
 		this.parserFactory = new NewsParserFactory();
+		boolean normalizeTime = false;
 		NewsParser newsParser = parserFactory.getNewsParser(url.toString());
 		if (newsParser == null) {
-			System.out.println("错误:找不到对应的解析器！");
 			LOG.info("错误:找不到对应的解析器！" + url.toString());
 		} else {
-			news = newsParser.getParse(content, encoding, url.toString());
-			/* 若时间提取不出(比如可能是15个站点其它板块的页面)，则采用搜索引擎所得结果 */
-			/* 发布时间之间采用从搜索引擎提取到的时间 */ // TODO
-			// news.setPubtime("todo");
-			try {
-				// 存储网页原始文本
-				news.setRawContent(new String(htmlBytes, encoding));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+			info = newsParser.getParse(html, null, url.toString());
+			String pubtime = null;
+			if("".equals(pubtime)||pubtime == null){
+				// TODO 如果在解析器中无法提取到新闻的pubtime，则使用搜索引擎中提取到的
+				normalizeTime = true;
 			}
+			info.setRawContent(html);
 		}
-		extract_encoding = encoding; // 提取正文时使用
-		/* 若是论坛，只使用BlockAlgorithms */
-		text = DOMExtractor.getMainContent(content, url.toString());
+		
+		/*使用第一种正文解析算法，开始解析正文*/
+		text = DOMExtractor.getMainContent(html, url.toString());
 		if (text == null || text.length() < minBodyLength) {
 			text = "";
 		} else {
@@ -76,56 +60,23 @@ public class HtmlParser {
 					text = text.substring(0, index).trim();
 			}
 		}
-
+		
+		/*第一种解析算法失败，使用第二种解析算法解析正文*/
 		if ("".equals(text)) {
 			LOG.info("第一种算法提取正文失败，改用第二种算法！");
 			try {
-				text = BlockAlgoExtractor.parse(content);
+				text = BlockAlgoExtractor.parse(html);
 			} catch (Exception e) {
-				LOG.info("第一种算法提取正文失败，改用第二种算法！");
+				LOG.info("第二种算法提取失败！");
 			}
-			if (text == null)
-				text = "";
+			if (text == null|| text.equals(""))
+				return null;
 		}
-		news.setContent(text);
-		if (news.getSource() == null || "".equals(news.getSource())) {
-			String source = ParseUtil.parseNewsSource(content);
-			LOG.info("再次尝试提取来源："+source);
-			news.setSource(source);
-		}
-		return news;
+		info.setContent(text);
+		
+		/*在解析后过滤，剔除无效的新闻*/
+		info = FilterUtil.filterAfterParse(info, normalizeTime, search_words);
+		return info;
 	}
 
-	private static String sniffCharacterEncoding(byte[] content) {
-		int length = content.length < CHUNK_SIZE ? content.length : CHUNK_SIZE;
-
-		// We don't care about non-ASCII parts so that it's sufficient
-		// to just inflate each byte to a 16-bit value by padding.
-		// For instance, the sequence {0x41, 0x82, 0xb7} will be turned into
-		// {U+0041, U+0082, U+00B7}.
-		String str = "";
-		try {
-			str = new String(content, 0, length, Charset.forName("ASCII").toString());
-		} catch (UnsupportedEncodingException e) {
-			// code should never come here, but just in case...
-			return null;
-		}
-
-		Matcher metaMatcher = metaPattern.matcher(str);
-		String encoding = null;
-		if (metaMatcher.find()) {
-			Matcher charsetMatcher = charsetPattern.matcher(metaMatcher.group(1));
-			if (charsetMatcher.find())
-				encoding = new String(charsetMatcher.group(1));
-		}
-
-		// 有些网页没有content-type, 直接从头部信息中提取charset信息,
-		// 如http://news.cjn.cn/mtzq/201501/t2594501.htm
-		Matcher ntciMatcher = ntci_charsetPattern.matcher(str);
-		if (ntciMatcher.find()) {
-			encoding = new String(ntciMatcher.group(1).trim());
-		}
-
-		return encoding;
-	}
 }

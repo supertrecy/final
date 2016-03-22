@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.abc.db.NewsInfo;
+
 /**
  * 中国经营网新闻解析
  * 注意：该网站的url如果不设置User-Agent会被拒绝

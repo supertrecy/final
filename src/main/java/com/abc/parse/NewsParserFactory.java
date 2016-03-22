@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.abc.util.URLUtil;
+
 public class NewsParserFactory {
 	private static Map<String, NewsParser> parserMap = new HashMap<String, NewsParser>();
 	private static CommonParser cp = new CommonParser();

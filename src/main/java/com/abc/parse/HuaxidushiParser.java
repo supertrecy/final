@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.abc.db.NewsInfo;
+
 /**
  * 华西都市报新闻解析
  * 

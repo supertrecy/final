@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.abc.db.NewsInfo;
+import com.abc.util.URLUtil;
+
 /**
  * http://citybank.jrj.com.cn/2014/05/13071517197394-1.shtml 
  * http://www.akxw.cn/finance/fund/ipodc/99870.html
@@ -179,9 +182,12 @@ public class CommonParser extends NewsParser {
 			pubtime = ""; ，
 		}*/
 		info.setPubtime(pubtime);
-		
 		info.setComment("");
-		
+//		if (info.getSource() == null || "".equals(info.getSource())) {
+//			System.out.println("提取失败"+"："+info.getUrl());
+//		}else{
+//			System.out.println(info.getSite()+"："+info.getSource());
+//		}
 		return info;
 	}
 	

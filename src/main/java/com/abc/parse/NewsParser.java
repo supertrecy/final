@@ -3,6 +3,8 @@ package com.abc.parse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import com.abc.db.NewsInfo;
+
 public class NewsParser {
 	protected static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	

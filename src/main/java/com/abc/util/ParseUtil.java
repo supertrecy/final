@@ -1,4 +1,4 @@
-package com.abc.parse;
+package com.abc.util;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
