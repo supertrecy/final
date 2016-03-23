@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.abc.db.NewsInfo;
+import com.abc.db.entity.NewsInfo;
 import com.abc.util.FilterUtil;
 
 import ntci.body.extractor.algorithm.BlockAlgoExtractor;

@@ -3,8 +3,7 @@ package com.abc.parse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.abc.db.NewsInfo;
-import com.abc.util.ParseUtil;
+import com.abc.db.entity.NewsInfo;
 
 public class SpecialNewsParser extends NewsParser {
 

@@ -1,4 +1,4 @@
-package com.abc.db;
+package com.abc.db.entity;
 
 public class NewsInfo  {
 	public static final String DIR_NAME = "news_info";

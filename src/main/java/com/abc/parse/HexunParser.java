@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.abc.db.NewsInfo;
+import com.abc.db.entity.NewsInfo;
 
 /**
  * 和讯网新闻解析
@@ -15,7 +15,7 @@ import com.abc.db.NewsInfo;
 public class HexunParser extends SpecialNewsParser {
 	public static final Logger LOG = LoggerFactory.getLogger(HexunParser.class);
 	
-	/** Used to extract base information */
+	/** 	Used to extract base information */
 	private static final String pubtimeRegex = "<span class=\"gray\".*?>(.*?)</span>"; 
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
 	private static final String sourceRegex = "来源：(?:</span>)?<a.*?>(.*?)</a>";

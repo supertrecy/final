@@ -16,14 +16,14 @@ public class ParseUtil {
 		if (source == null) {
 			System.out.println("第二种来源匹配失败，无法提取文章来源 ！");
 		}
-		
-		String s = source.get(0).nextElementSibling().text();
-		if(s!=null){
+		String s = source.get(0).nextElementSibling().ownText();
+		/*if(s!=null){
 			s = s.substring(s.lastIndexOf(">")+1);
 			if(s.lastIndexOf("<")!=-1)
 				s = s.substring(0,s.lastIndexOf("<")-1);
 			return s;
-		}
-		return "";
+		}*/
+		System.out.println(s);
+		return s;
 	}
 }

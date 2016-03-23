@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.abc.db.News;
-import com.abc.db.NewsUtil;
+import com.abc.db.dao.NewsDao;
+import com.abc.db.entity.News;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -33,9 +33,9 @@ public class TraceToSourceServlet extends HttpServlet {
 		List<News> newsList = null;
 		String keyword = request.getParameter("keyword");
 		if(keyword == null){
-			newsList = NewsUtil.getNewsListBySearchWords("");
+			newsList = NewsDao.getNewsListBySearchWords("");
 		}else{
-			newsList = NewsUtil.getNewsListBySearchWords(keyword);
+			newsList = NewsDao.getNewsListBySearchWords(keyword);
 		}
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		

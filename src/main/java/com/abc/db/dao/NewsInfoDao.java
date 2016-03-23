@@ -1,4 +1,4 @@
-package com.abc.db;
+package com.abc.db.dao;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
  * A collection of methods for extract video informations.
  *
  */
-public class NewsInfoUtils {
-	public static final Logger LOG = LoggerFactory.getLogger(NewsInfoUtils.class);
+public class NewsInfoDao {
+	public static final Logger LOG = LoggerFactory.getLogger(NewsInfoDao.class);
 	
 	/**
 	 * 

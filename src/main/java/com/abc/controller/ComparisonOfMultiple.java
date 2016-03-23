@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.abc.db.News;
-import com.abc.db.NewsUtil;
+import com.abc.db.dao.NewsDao;
+import com.abc.db.entity.News;
 import com.abc.vsm.Vsm;
 
 public class ComparisonOfMultiple {
@@ -19,7 +19,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test1() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsList();
+		List<News> newsList = NewsDao.getNewsList();
 		int size = newsList.size();
 		List<Boolean> tagList = new ArrayList<Boolean>();
 		for (int i = 0; i < size; i++) {
@@ -58,7 +58,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test2() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsList();
+		List<News> newsList = NewsDao.getNewsList();
 		int size = newsList.size();
 		List<Boolean> tagList = new ArrayList<Boolean>();
 		for (int i = 0; i < size; i++) {
@@ -97,7 +97,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test3() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsList();
+		List<News> newsList = NewsDao.getNewsList();
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
@@ -116,7 +116,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test4() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsList();
+		List<News> newsList = NewsDao.getNewsList();
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
@@ -137,7 +137,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test5(String keyword) {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsListBySearchWords(keyword);
+		List<News> newsList = NewsDao.getNewsListBySearchWords(keyword);
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
@@ -158,7 +158,7 @@ public class ComparisonOfMultiple {
 	 */
 	public static void test6(String keyword) {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsListBySearchWords(keyword);
+		List<News> newsList = NewsDao.getNewsListBySearchWords(keyword);
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();

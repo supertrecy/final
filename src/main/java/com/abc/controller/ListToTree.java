@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.abc.db.News;
-import com.abc.db.NewsUtil;
 import com.abc.db.TreeNode;
+import com.abc.db.dao.NewsDao;
+import com.abc.db.entity.News;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -28,9 +28,9 @@ public class ListToTree {
 		long start = System.currentTimeMillis();
 		List<News> newsList = null;
 		if(keyword == null || "".equals(keyword)){
-			newsList = NewsUtil.getNewsList();
+			newsList = NewsDao.getNewsList();
 		}else{
-			newsList = NewsUtil.getNewsListBySearchWords(keyword);
+			newsList = NewsDao.getNewsListBySearchWords(keyword);
 		}
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		
@@ -68,7 +68,7 @@ public class ListToTree {
 	 */
 	public static void test1() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsUtil.getNewsList();
+		List<News> newsList = NewsDao.getNewsList();
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();

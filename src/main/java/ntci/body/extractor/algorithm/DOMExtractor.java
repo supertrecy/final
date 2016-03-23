@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import ntci.body.extractor.utils.StringUtil;
-import ntci.body.extractor.utils.util;
+import ntci.body.extractor.utils.Util;
 
 /**
  * 基于信息量衰减幅度的正文提取算法！！
@@ -122,7 +122,7 @@ public class DOMExtractor {
 				return root;
 			}
 			
-			int curCTN = util.calClearTextLen(maxCTE);
+			int curCTN = Util.calClearTextLen(maxCTE);
 			ratio = calRatio(pCTN, curCTN);
 
 			if (ratio > threshold) {
@@ -148,8 +148,8 @@ public class DOMExtractor {
 		int max = 0;
 		Element maxClearTextElement = null;
 		for (Element e : es) {
-			if (util.calClearTextLen(e) > max) {
-				max = util.calClearTextLen(e);
+			if (Util.calClearTextLen(e) > max) {
+				max = Util.calClearTextLen(e);
 				maxClearTextElement = e;
 			}
 		}
@@ -158,7 +158,7 @@ public class DOMExtractor {
 	
 	public static Document getDocument(String sURL) {
 		try {
-			return Jsoup.connect(sURL).userAgent(util.FIREFOX_USER_AGENT).timeout(TIME_OUT).get();
+			return Jsoup.connect(sURL).userAgent(Util.FIREFOX_USER_AGENT).timeout(TIME_OUT).get();
 		} catch (IOException e) {
 			System.err.println("Create document failed.");
 			return null;

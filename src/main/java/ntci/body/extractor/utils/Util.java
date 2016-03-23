@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
-public class util {
+public class Util {
 	public static final String FIREFOX_USER_AGENT    =     "Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15";
 	public final static String[]   cleanRegexs        =    {"<style[^>]*?>[\\s\\S]*?</style>",                 // 
 													        "<script[^>]*?>[\\s\\S]*?</script>",               // 

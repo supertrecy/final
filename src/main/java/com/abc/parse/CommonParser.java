@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.abc.db.NewsInfo;
+import com.abc.db.entity.NewsInfo;
 import com.abc.util.URLUtil;
 
 /**

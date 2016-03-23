@@ -1,4 +1,4 @@
-package com.abc.db;
+package com.abc.db.entity;
 
 public class News {
 

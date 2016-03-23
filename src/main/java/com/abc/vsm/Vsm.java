@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.abc.db.News;
+import com.abc.db.entity.News;
 
 public class Vsm {
 	/**

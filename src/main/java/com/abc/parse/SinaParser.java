@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.abc.db.NewsInfo;
+import com.abc.db.entity.NewsInfo;
 
 /**
  * 基本信息：国内、国际、社会新闻；财经（国内财经、银行）getParse可以解析国际、国内、社会、军事四个板块的新闻

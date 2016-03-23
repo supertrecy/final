@@ -4,8 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import com.abc.db.NewsInfo;
-import com.abc.db.NewsUtil;
+import com.abc.db.dao.NewsDao;
+import com.abc.db.entity.NewsInfo;
 import com.abc.parse.HtmlParser;
 
 import us.codecraft.webmagic.Page;
@@ -26,7 +26,7 @@ public class BingNewsPageProcessor  implements PageProcessor {
 			try {
 				NewsInfo news = parser.getParse(search_words,page.getRawText(), new URL(page.getUrl().toString()));
 				if(news != null)
-					NewsUtil.addNews(news);
+					NewsDao.addNews(news);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

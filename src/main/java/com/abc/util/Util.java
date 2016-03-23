@@ -7,23 +7,24 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class Util {
 	/**
 	 * 把url写入到一个html文件中，方便点击检查
 	 * @param url
 	 */
-	public static void writeToFile(String url) {
-		File f = new File("E:\\1.html");
-		if (!f.exists())
-			try {
-				f = Files.createFile(Paths.get("E:\\1.html")).toFile();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+	
+	private static String htmlfilename;
+	
+	static{
+		htmlfilename = "E:\\"+System.currentTimeMillis()+".html";
+	}
+	
+	public static void writeToHtmlFile(String url) {
+		File f = new File(htmlfilename);
 		try {
+			if (!f.exists())
+				f.createNewFile();
 			Writer out = new OutputStreamWriter(new FileOutputStream(f, true), "UTF-8");
 			String link = "<a href=\"" + url + "\">" + url + "</a><br>";
 			out.write(link);
