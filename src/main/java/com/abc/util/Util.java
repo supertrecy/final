@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Util {
 	/**
@@ -40,10 +41,19 @@ public class Util {
 		}
 	}
 	
-	public static ArrayList<String> normalizeKeyword(String keyword) {
+	public static List<String> normalizeKeyword(String keyword) {
 		String[] split = keyword.split("[\\|,; ]");
-		ArrayList<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
 		list.addAll(Arrays.asList(split));
 		return list;
+	}
+	
+	public static String glueSearchWords(List<String> search_words){
+		StringBuilder sb = new StringBuilder();
+		for (String word : search_words) {
+			sb.append(word);
+			sb.append(";");
+		}
+		return sb.toString();
 	}
 }

@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,15 +36,11 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		String keyword = request.getParameter("keyword");
 		
 		//TODO 用爬虫抓取本次关键词相关的新闻，并存入数据库
-		ArrayList<String> search_words = Util.normalizeKeyword(keyword);
+		List<String> search_words = Util.normalizeKeyword(keyword);
 		new SearchHandler().startNewsSearch(search_words);
 		
 		//从数据库中获取本次关键词相关的新闻列表
-		if(keyword == null){
-			newsList = NewsDao.getNewsListBySearchWords("");
-		}else{
-			newsList = NewsDao.getNewsListBySearchWords(keyword);
-		}
+		newsList = NewsDao.getNewsListBySearchWords(Util.glueSearchWords(search_words));
 		
 		//根据新闻内容对新闻列表进行分类
 		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
@@ -56,7 +50,7 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		JSONArray array = new JSONArray();
 		obj.put("name", keyword);
 		int i = 0;
-		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
+		for (Iterator<List<News>> iterator = newsGroup.iterator(); iterator.hasNext();) {
 			List<News> news = (List<News>) iterator.next();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
@@ -82,12 +76,6 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		response.sendRedirect("demo1_1.jsp");
 	}
 
-	private ArrayList<String> normalizeKeyword(String keyword) {
-		String[] split = keyword.split("[\\|,; ]");
-		ArrayList<String> list = new ArrayList<String>();
-		list.addAll(Arrays.asList(split));
-		return list;
-	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

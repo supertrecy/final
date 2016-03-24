@@ -20,9 +20,7 @@ public class HuaxidushiParser extends SpecialNewsParser {
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
 
 	private static Pattern pTitle;
-	private static Pattern pPubtime;
 	private static Pattern pKeywords;
-	private static Pattern pSource;
 	
 	protected static String site = "华西都市报";
 
@@ -37,9 +35,8 @@ public class HuaxidushiParser extends SpecialNewsParser {
 		String pubtime ="";
 		String keywords = this.extractKeywords(content, pKeywords);
 		String source = "";
-		String plate = "";
 		// LOOKAT 没有来源和时间，提取不到？
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 
 

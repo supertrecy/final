@@ -50,7 +50,6 @@ public class XinhuaParser extends SpecialNewsParser {
 		String pubtime = "";
 		String keywords = "";
 		String source = "";
-		String plate = "";
 
 		/* 提取发布时间信息 */
 		Matcher matcher = pPubtime.matcher(content);
@@ -79,7 +78,7 @@ public class XinhuaParser extends SpecialNewsParser {
 		title = this.extractTitle(content, pTitle);
 		keywords = this.extractKeywords(content, pKeywords);
 		source = this.extractSource(content, pSource);
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 
 	@Override

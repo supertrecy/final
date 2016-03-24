@@ -178,7 +178,6 @@ public class CommonParser extends NewsParser {
 	 */
 	private void getBaseInfo(NewsInfo info, String url, String content) {
 		String site = "";
-		String plate = "";
 		String title = "";
 		String pubtime = "";
 		String keywords = "";
@@ -285,7 +284,7 @@ public class CommonParser extends NewsParser {
 			source = source.substring(0, index);
 		}
 		
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 	
 }

@@ -46,8 +46,7 @@ public class PeopleParser extends SpecialNewsParser {
 		String pubtime = this.extractPubTime(content, pPubtime);
 		String keywords = this.extractKeywords(content, pKeywords);
 		String source = this.extractSource(content, pSource);
-		String plate = "";
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 
 	@Override

@@ -44,8 +44,6 @@ public class SichuanolParser extends SpecialNewsParser {
 		String pubtime = "";
 		String keywords = "";
         String source = "";
-        String plate = "";
-        
 				
 		/* 提取发布时间和新闻来源信息 */	
 		Matcher matcher = pTimeSource.matcher(content);
@@ -77,8 +75,7 @@ public class SichuanolParser extends SpecialNewsParser {
 		source = source.replace("来源：", "");
 		title = this.extractTitle(content, pTitle);
 		keywords = this.extractKeywords(content, pKeywords);
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 	
 	private String translate(String pubtime) {

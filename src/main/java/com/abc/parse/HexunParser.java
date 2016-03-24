@@ -34,15 +34,13 @@ public class HexunParser extends SpecialNewsParser {
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 	}
 
-	
 	@Override
 	protected void getBaseInfo(NewsInfo info, String url, String content) {
 		String title = this.extractTitle(content, pTitle);
 		String pubtime = this.extractPubTime(content, pPubtime);
 		String keywords = this.extractKeywords(content, pKeywords);
 		String source = this.extractSource(content, pSource);
-		String plate = "";
-		info.setBaseInfo(site, plate, title, pubtime, keywords, source);
+		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
 
 	@Override

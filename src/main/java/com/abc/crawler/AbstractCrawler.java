@@ -8,6 +8,7 @@ import java.util.Map;
 import com.abc.db.dao.NewsDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.parse.HtmlParser;
+import com.abc.util.Util;
 
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -17,6 +18,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 	private Site site = Site.me().setRetryTimes(3).setSleepTime(100);
 	private static Map<String, String> urlTimeMap;
 	private static List<String> searchWords;
+	private static String searchWordsStr;
 	private static NewsDao dao;
 	protected static int i = 0;
 
@@ -42,9 +44,9 @@ public abstract class AbstractCrawler implements PageProcessor {
 		return site;
 	}
 
-
 	public static void setSearchWords(List<String> searchWords) {
 		AbstractCrawler.searchWords = searchWords;
+		searchWordsStr = Util.glueSearchWords(searchWords);
 	}
 
 	public static Map<String, String> getUrlTimeMap() {
@@ -58,6 +60,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 			NewsInfo news = parser.getParse(searchWords, html, url,urlTimeMap.get(url));
 			if (news != null){
 				System.out.println("成功解析："+news.getUrl());
+				news.setSearchWords(searchWordsStr);
 				NewsDao.addNews(news);
 			}
 		}
