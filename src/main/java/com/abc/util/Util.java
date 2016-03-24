@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Util {
 	/**
@@ -36,5 +38,12 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static ArrayList<String> normalizeKeyword(String keyword) {
+		String[] split = keyword.split("[\\|,; ]");
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(Arrays.asList(split));
+		return list;
 	}
 }

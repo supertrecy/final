@@ -1,32 +1,43 @@
 package com.abc.crawler;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.abc.db.dao.NewsDao;
-import com.abc.db.entity.NewsInfo;
-import com.abc.parse.HtmlParser;
 
 import us.codecraft.webmagic.Page;
 
-public class SogouNewsPageProcessor extends AbstractCrawler{
+public class SogouNewsPageProcessor extends AbstractCrawler {
 
 	@Override
 	public void process(Page page) {
+		/* 如果是搜索引擎页面 */
 		List<String> links = page.getHtml().css("h3.vrTitle").links().all();
+		List<String> pubtimeTexts = page.getHtml().css(".news-from", "text").all();
+		List<String> pubtimes = this.extractPubtime(pubtimeTexts);
+		addLinkAndTime(links, pubtimes);
 		page.addTargetRequests(links);
-		String title = page.getHtml().$("title","text").toString();
-		if(!title.contains("搜狗新闻搜索")){
-			HtmlParser parser = new HtmlParser();
-			try {
-				NewsInfo news = parser.getParse(search_words,page.getRawText(), new URL(page.getUrl().toString()));
-				if(news != null)
-					NewsDao.addNews(news);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
+
+		/* 如果是新闻页面 */
+		String title = page.getHtml().$("title", "text").toString();
+		if (!title.contains("搜狗新闻搜索")) {
+			System.out.println((++i) + "." + title);
+			this.parseNewsHtml(page.getRawText(), page.getUrl().toString());
 		}
+	}
+
+	@Override
+	protected List<String> extractPubtime(List<String> rawTexts) {
+		List<String> pubtimes = new LinkedList<>();
+		for (String rawText : rawTexts) {
+			String pubtime = "";
+			String[] s = rawText.replaceAll("\u00a0", " ").split(" ");
+			if (s.length > 1)
+				pubtime = s[1];
+			if (pubtime == null)
+				pubtimes.add("");
+			else
+				pubtimes.add(pubtime);
+		}
+		return pubtimes;
 	}
 
 }

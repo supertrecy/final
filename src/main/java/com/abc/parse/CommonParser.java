@@ -164,30 +164,10 @@ public class CommonParser extends NewsParser {
 	public NewsInfo getParse(String content, String encoding,String url) {
 		NewsInfo info = new NewsInfo();
 		String contentStr = content;
-		/*try {
-			contentStr = new String(content.getBytes(), encoding);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}	*/
-		
-		info.setUrl(url);
-		
 		String curTime = df.format(System.currentTimeMillis());
 		info.setFetchtime(curTime);
+		info.setUrl(url);
 		getBaseInfo(info, url, contentStr);
-			
-		//LOOKAT 如果搜索引擎里没有提取时间，设为空，所以要考虑如何获取搜索引擎里的时间
-		String pubtime = "todo";
-		/*if (pubtime == null) {
-			pubtime = ""; ，
-		}*/
-		info.setPubtime(pubtime);
-		info.setComment("");
-//		if (info.getSource() == null || "".equals(info.getSource())) {
-//			System.out.println("提取失败"+"："+info.getUrl());
-//		}else{
-//			System.out.println(info.getSite()+"："+info.getSource());
-//		}
 		return info;
 	}
 	

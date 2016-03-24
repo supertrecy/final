@@ -196,6 +196,35 @@ public class NewsDao {
 				}
 		}
 		return result;
-
+	}
+	
+	public boolean isExist(String url){
+		String sql = "select * from news_search_data where URL = ?";
+		PreparedStatement stat = null;
+		Connection con = null;
+		boolean result = false;
+		con = DBHelper.getConnection();
+		try {
+			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat.setString(1, url);
+			if(stat.executeQuery().next())
+				result = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			if(con != null)
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return result;
 	}
 }

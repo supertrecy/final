@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.abc.crawler.SearchHandler;
 import com.abc.db.dao.NewsDao;
 import com.abc.db.entity.News;
+import com.abc.util.Util;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -37,7 +38,7 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		String keyword = request.getParameter("keyword");
 		
 		//TODO 用爬虫抓取本次关键词相关的新闻，并存入数据库
-		ArrayList<String> search_words = normalizeKeyword(keyword);
+		ArrayList<String> search_words = Util.normalizeKeyword(keyword);
 		new SearchHandler().startNewsSearch(search_words);
 		
 		//从数据库中获取本次关键词相关的新闻列表

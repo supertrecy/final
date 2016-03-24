@@ -1,13 +1,12 @@
 package com.abc.crawler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.abc.crawler.extract.SearchUrlExtractor;
+import com.abc.util.Util;
 
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.JsonFilePipeline;
@@ -16,6 +15,7 @@ public class SearchHandler {
 
 	public static final Logger LOG = LoggerFactory.getLogger(SearchHandler.class);
 	private SearchUrlExtractor se = new SearchUrlExtractor();
+	private static final int THREAD_NUM = 5;
 
 	public SearchHandler() {
 	}
@@ -32,34 +32,27 @@ public class SearchHandler {
 		}
 		String query = sb.substring(0, sb.length() - 1);
 		LOG.info("*** 当前处理新闻搜索任务的词组：" + query);
-		LOG.info("*** 开始执行新闻(资讯)搜索");
+
+		BaiduNewsPageProcessor baidu = new BaiduNewsPageProcessor();
+		BingNewsPageProcessor bing = new BingNewsPageProcessor();
+		SogouNewsPageProcessor sogou = new SogouNewsPageProcessor();
+		BaiduNewsPageProcessor.setSearchWords(search_words);
 
 		/* 执行抓取 */
-		Spider.create(new BaiduNewsPageProcessor().setSearchWords(search_words))
-				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
-				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
+		Spider.create(baidu).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 
-		Spider.create(new BingNewsPageProcessor().setSearchWords(search_words))
-				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
-				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
+		Spider.create(bing).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 
-		Spider.create(new SogouNewsPageProcessor().setSearchWords(search_words))
-				.addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
-				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(5).run();
+		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 
 	}
-	
+
 	public static void main(String[] args) {
 		String keywords = "荒野猎人";
 		SearchHandler sh = new SearchHandler();
-		sh.startNewsSearch(sh.normalizeKeyword(keywords));
+		sh.startNewsSearch(Util.normalizeKeyword(keywords));
 	}
-
-	private ArrayList<String> normalizeKeyword(String keyword) {
-		String[] split = keyword.split("[\\|,; ]");
-		ArrayList<String> list = new ArrayList<String>();
-		list.addAll(Arrays.asList(split));
-		return list;
-	}
-
 }

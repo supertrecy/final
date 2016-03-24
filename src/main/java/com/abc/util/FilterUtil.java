@@ -27,7 +27,7 @@ public class FilterUtil {
 	// siteDao = new SiteDao();
 	// }
 
-	public static NewsInfo filterAfterParse(NewsInfo info, boolean normalizeTime, List<String> filterWords) {
+	public static NewsInfo filterAfterParse(NewsInfo info, boolean isStandardTime, List<String> filterWords) {
 		/* 过滤不含关键词的内容 */
 		String content = info.getContent();
 		if (!containKeywords(content, wordSegmentation(filterWords))) {
@@ -58,7 +58,7 @@ public class FilterUtil {
 		}
 
 		/* 过滤发布时间，如果需要的话格式化 */
-		if (normalizeTime) {
+		if (!isStandardTime) {
 			String pubtime = info.getPubtime(); // 2014-05-06形式或20140506 2211形式
 			pubtime = pubtime.replaceAll("-", "");
 			matcher = checkPubtime.matcher(pubtime);
