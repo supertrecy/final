@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.abc.db.entity.News;
+import com.abc.db.entity.NewsInfo;
 
 public class Vsm {
 	/**
@@ -58,8 +58,8 @@ public class Vsm {
 	/**
 	 * @return 新闻集合，相同内容新闻被划分在一起
 	 */
-	public static List<List<News>> compareMutiple(List<News> newsList) {
-		List<List<News>> newsGroup = new ArrayList<List<News>>();
+	public static List<List<NewsInfo>> compareMutiple(List<NewsInfo> newsList) {
+		List<List<NewsInfo>> newsGroup = new ArrayList<List<NewsInfo>>();
 		List<Boolean> tagList = new ArrayList<Boolean>();
 		List<HashMap<String, Integer>> tfList = new ArrayList<HashMap<String, Integer>>();
 		int size = newsList.size();
@@ -71,13 +71,13 @@ public class Vsm {
 		
 		for (int i = 0; i < size-1; i++) {
 			if(tagList.get(i)){
-				List<News> sameNews = new ArrayList<News>();
+				List<NewsInfo> sameNews = new ArrayList<NewsInfo>();
 				int j = i+1;
-				News news1 = newsList.get(i);
+				NewsInfo news1 = newsList.get(i);
 				sameNews.add(news1);
 				for (; j < size; j++) {
 					if(tagList.get(j)){
-						News news2 = newsList.get(j);
+						NewsInfo news2 = newsList.get(j);
 						if(Vsm.compareTwo(tfList.get(i),tfList.get(j)) == 1){
 							sameNews.add(news2);
 							tagList.set(j, new Boolean(false));

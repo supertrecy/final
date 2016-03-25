@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.abc.db.dao.NewsDao;
-import com.abc.db.entity.News;
+import com.abc.db.dao.NewsInfoDao;
+import com.abc.db.entity.NewsInfo;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -30,21 +30,21 @@ public class TraceToSourceServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		long start = System.currentTimeMillis();
-		List<News> newsList = null;
+		List<NewsInfo> newsList = null;
 		String keyword = request.getParameter("keyword");
 		if(keyword == null){
-			newsList = NewsDao.getNewsListBySearchWords("");
+			newsList = NewsInfoDao.getNewsListBySearchWords("");
 		}else{
-			newsList = NewsDao.getNewsListBySearchWords(keyword);
+			newsList = NewsInfoDao.getNewsListBySearchWords(keyword);
 		}
-		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
+		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
 		
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		obj.put("name", keyword);
 		int i = 0;
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
-			List<News> news = (List<News>) iterator.next();
+			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
 				System.out.println("构建第"+(++i)+"棵树");

@@ -10,7 +10,8 @@ import java.util.List;
 
 import com.abc.db.TreeNode;
 import com.abc.db.dao.NewsDao;
-import com.abc.db.entity.News;
+import com.abc.db.dao.NewsInfoDao;
+import com.abc.db.entity.NewsInfo;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -26,20 +27,20 @@ public class ListToTree {
 	 */
 	private static void test2(String keyword) {
 		long start = System.currentTimeMillis();
-		List<News> newsList = null;
+		List<NewsInfo> newsList = null;
 		if(keyword == null || "".equals(keyword)){
-			newsList = NewsDao.getNewsList();
+			newsList = NewsInfoDao.getNewsList();
 		}else{
-			newsList = NewsDao.getNewsListBySearchWords(keyword);
+			newsList = NewsInfoDao.getNewsListBySearchWords(keyword);
 		}
-		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
+		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
 		
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		obj.put("name", "本次搜索");
 		int i = 0;
 		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
-			List<News> news = (List<News>) iterator.next();
+			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
 				System.out.println("第"+(++i)+"棵树");
@@ -68,13 +69,13 @@ public class ListToTree {
 	 */
 	public static void test1() {
 		long start = System.currentTimeMillis();
-		List<News> newsList = NewsDao.getNewsList();
-		List<List<News>> newsGroup = Vsm.compareMutiple(newsList);
+		List<NewsInfo> newsList = NewsInfoDao.getNewsList();
+		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		obj.put("name", "本次搜索");
-		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
-			List<News> news = (List<News>) iterator.next();
+		for (Iterator<List<NewsInfo>> iterator = newsGroup.iterator(); iterator.hasNext();) {
+			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
 			}
@@ -96,10 +97,10 @@ public class ListToTree {
 		System.out.println("总耗时" + time + "秒");
 	}
 	
-	public JSONObject listToTree(List<News> list) { // TODO change String to other object,such as TempDataStructure
+	public JSONObject listToTree(List<NewsInfo> list) { // TODO change String to other object,such as TempDataStructure
 		List<TreeNode<String>> queue = new LinkedList<TreeNode<String>>();
 		String title = list.get(0).getTitle();
-		for (News news : list) {
+		for (NewsInfo news : list) {
 			String source = news.getSource();
 			String site = news.getSite();
 			if (source == null||"".equals(source)) {

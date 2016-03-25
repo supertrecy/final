@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.abc.db.dao.NewsDao;
+import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.parse.HtmlParser;
 import com.abc.util.Util;
@@ -19,14 +20,12 @@ public abstract class AbstractCrawler implements PageProcessor {
 	private static Map<String, String> urlTimeMap;
 	private static List<String> searchWords;
 	private static String searchWordsStr;
-	private static NewsDao dao;
 	protected static int i = 0;
 
 	protected abstract List<String> extractPubtime(List<String> rawText);
 
 	static {
 		urlTimeMap = new HashMap<>();
-		dao = new NewsDao();
 	}
 
 	void addLinkAndTime(List<String> urls, List<String> pubtimes) {
@@ -45,6 +44,8 @@ public abstract class AbstractCrawler implements PageProcessor {
 	}
 
 	public static void setSearchWords(List<String> searchWords) {
+		if(AbstractCrawler.searchWords != null)
+			searchWords.clear();
 		AbstractCrawler.searchWords = searchWords;
 		searchWordsStr = Util.glueSearchWords(searchWords);
 	}
@@ -54,14 +55,14 @@ public abstract class AbstractCrawler implements PageProcessor {
 	}
 
 	void parseNewsHtml(String html, String url) {
-		if(!dao.isExist(url)){
+		if(!NewsInfoDao.isExist(url)){
 			System.out.println("开始处理："+url);
 			HtmlParser parser = new HtmlParser();
 			NewsInfo news = parser.getParse(searchWords, html, url,urlTimeMap.get(url));
 			if (news != null){
 				System.out.println("成功解析："+news.getUrl());
 				news.setSearchWords(searchWordsStr);
-				NewsDao.addNews(news);
+				NewsInfoDao.addNews(news);
 			}
 		}
 	}

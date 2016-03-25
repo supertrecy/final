@@ -1,18 +1,18 @@
 package com.abc.db.dao;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.abc.db.DBHelper;
+import com.abc.db.entity.NewsInfo;
+import com.mysql.jdbc.PreparedStatement;
 
 /**
  * A collection of methods for extract video informations.
@@ -21,105 +21,164 @@ import org.slf4j.LoggerFactory;
 public class NewsInfoDao {
 	public static final Logger LOG = LoggerFactory.getLogger(NewsInfoDao.class);
 	
-	/**
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static String getContent(URL url, String encoding) {
-		String content = null;
-		HttpURLConnection httpConnection = null; 
-		InputStream in = null; 
-		ByteArrayOutputStream output = null;
-		int bufferSize = 8 * 1024;
-		byte[] con;
-		
+	public static List<NewsInfo> getNewsList() {
+		List<NewsInfo> newsList = new ArrayList<NewsInfo>();
+		Connection con = null;
+		Statement stat = null;
 		try {
-			httpConnection = (HttpURLConnection)url.openConnection(); 
-			httpConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0");
-//			httpConnection.setRequestProperty("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
-//			httpConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-//			httpConnection.setRequestProperty("Accept-Encoding", "gzip, deflate"); // 注意！！！
-			httpConnection.setConnectTimeout(10000);  
-			httpConnection.setReadTimeout(30000);  
-			
-			httpConnection.connect(); 
-			
-			if (httpConnection.getResponseCode() >= 400) { 
-				throw new RuntimeException("Build connection failed!:  " + httpConnection.getResponseCode() + "" + url);
+			con = DBHelper.getConnection();
+			stat = con.createStatement();
+			String sql = "select * from news_search_data";
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
+				NewsInfo news = new NewsInfo();
+				news.setContent(rs.getString("CONTENT"));
+				news.setRawContent(rs.getString("CONTENT_HTML"));
+				news.setFetchtime(rs.getString("FETCH_TIME"));
+				news.setKeywords(rs.getString("KEYWORDS"));
+				news.setPubtime(rs.getString("PUBLISH_TIME"));
+				news.setSearchWords(rs.getString("SEARCH_WORDS"));
+				news.setSite(rs.getString("SITE"));
+				news.setSource(rs.getString("SOURCE"));
+				news.setTitle(rs.getString("TITLE"));
+				news.setUrl(rs.getString("URL"));
+				newsList.add(news);
 			}
-
-			in = httpConnection.getInputStream();
-			output = new ByteArrayOutputStream(bufferSize);
-			byte[] b = new byte[bufferSize];
-			int i = 0;
-			
-			while ((i = in.read(b)) != -1 ) {
-				output.write(b, 0, i);
-			}
-			con = output.toByteArray();
-//			con = processDeflateEncoded(con); // 如果设置了Accept-Encoding，此处需要解码
-			content = new String(con, encoding);
-		} catch (MalformedURLException e) {
-			LOG.warn(e.getMessage());
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
-			LOG.warn("io error-----" + e.getMessage());
-			System.out.println(e.getMessage());
-		} catch (RuntimeException e) {
-			LOG.warn(e.getMessage());
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			System.out.println("无法创建statement");
+			e.printStackTrace();
 		} finally {
-			try {
-				if (output != null)
-					output.close();
-				if (in != null)
-					in.close(); 
-			} catch (Exception e) {}
-			if (httpConnection != null)
-			    httpConnection.disconnect();
-		}   
-		return content;
-	} 
-	
-	/**
-	 * 解码unicode
-	 * @param str
-	 * @return
-	 */
-	public static String decodeUnicode(String str) {  
-		StringBuffer sb = new StringBuffer();
+			if (stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					System.out.println("数据库statement无法关闭");
+					e.printStackTrace();
+				}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println("数据库connection无法关闭");
+					e.printStackTrace();
+				}
+			}
+		}
+		return newsList;
+	}
+
+
+	public static List<NewsInfo> getNewsListBySearchWords(String keyword) {
+		List<NewsInfo> newsList = new ArrayList<NewsInfo>();
+		Connection con = null;
+		PreparedStatement stat = null;
 		try {
-			Charset set = Charset.forName("UTF-16");  
-		    Pattern p = Pattern.compile("\\\\u([0-9a-fA-F]{4})");  
-		    Matcher m = p.matcher( str );  
-		    int start = 0 ;  
-		    int start2 = 0 ;  
-		          
-		    while( m.find( start ) ) {  
-		        start2 = m.start() ;  
-		        if( start2 > start ){  
-		            String seg = str.substring(start, start2) ;  
-		            sb.append( seg );  
-		        }  
-		        String code = m.group( 1 );  
-		        int i = Integer.valueOf( code , 16 );  
-		        byte[] bb = new byte[ 4 ] ;  
-		        bb[ 0 ] = (byte) ((i >> 8) & 0xFF );  
-		        bb[ 1 ] = (byte) ( i & 0xFF ) ;  
-		        ByteBuffer b = ByteBuffer.wrap(bb);  
-		        sb.append( String.valueOf( set.decode(b) ).trim() );  
-		        start = m.end() ;  
-		    }  
-		    start2 = str.length() ;  
-		    if( start2 > start ){  
-		        String seg = str.substring(start, start2) ;  
-		        sb.append( seg );  
-		    }
-		} catch (Exception e) {
-			 return null;
-		}        
-		return sb.toString(); 
+			con = DBHelper.getConnection();
+			stat = (PreparedStatement) con.prepareStatement("select * from news_search_data where search_words = ?");
+			stat.setString(1, keyword);
+			ResultSet rs = stat.executeQuery();
+			while (rs.next()) {
+				NewsInfo news = new NewsInfo();
+				news.setContent(rs.getString("CONTENT"));
+				news.setRawContent(rs.getString("CONTENT_HTML"));
+				news.setFetchtime(rs.getString("FETCH_TIME"));
+				news.setKeywords(rs.getString("KEYWORDS"));
+				news.setPubtime(rs.getString("PUBLISH_TIME"));
+				news.setSearchWords(rs.getString("SEARCH_WORDS"));
+				news.setSite(rs.getString("SITE"));
+				news.setSource(rs.getString("SOURCE"));
+				news.setTitle(rs.getString("TITLE"));
+				news.setUrl(rs.getString("URL"));
+				newsList.add(news);
+			}
+		} catch (SQLException e) {
+			System.out.println("无法创建statement");
+			e.printStackTrace();
+		} finally {
+			if (stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					System.out.println("数据库statement无法关闭");
+					e.printStackTrace();
+				}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println("数据库connection无法关闭");
+					e.printStackTrace();
+				}
+			}
+		}
+		return newsList;
+	}
+
+	public static boolean addNews(NewsInfo news) {
+		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT,KEYWORDS,FETCH_TIME,SEARCH_WORDS) values (?,?,?,?,?,?,?,?,?)";
+		PreparedStatement stat = null;
+		Connection con = null;
+		boolean result = false;
+		con = DBHelper.getConnection();
+		try {
+			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat.setString(1, news.getUrl());
+			stat.setString(2, news.getSite());
+			stat.setString(3, news.getSource());
+			stat.setString(4, news.getTitle());
+			stat.setString(5, news.getPubtime());
+			stat.setString(6, news.getContent());
+			stat.setString(7, news.getKeywords());
+			stat.setString(8, news.getFetchtime());
+			stat.setString(9, news.getSearchWords());
+			result = stat.executeUpdate()>0?true:false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			if(con != null)
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return result;
+	}
+	
+	public static boolean isExist(String url){
+		String sql = "select * from news_search_data where URL = ?";
+		PreparedStatement stat = null;
+		Connection con = null;
+		boolean result = false;
+		con = DBHelper.getConnection();
+		try {
+			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat.setString(1, url);
+			if(stat.executeQuery().next())
+				result = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if(stat != null)
+				try {
+					stat.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			if(con != null)
+				try {
+					con.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return result;
 	}
 	
 }

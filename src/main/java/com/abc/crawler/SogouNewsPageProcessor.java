@@ -13,8 +13,10 @@ public class SogouNewsPageProcessor extends AbstractCrawler {
 		List<String> links = page.getHtml().css("h3.vrTitle").links().all();
 		List<String> pubtimeTexts = page.getHtml().css(".news-from", "text").all();
 		List<String> pubtimes = this.extractPubtime(pubtimeTexts);
+		List<String> morelinks = page.getHtml().css("#news_similar").links().all();
 		addLinkAndTime(links, pubtimes);
-		page.addTargetRequests(links);
+		morelinks.addAll(links);
+		page.addTargetRequests(morelinks);
 
 		/* 如果是新闻页面 */
 		String title = page.getHtml().$("title", "text").toString();

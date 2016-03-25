@@ -19,9 +19,11 @@ public class BaiduNewsPageProcessor extends AbstractCrawler {
 		/* 如果是搜索引擎页面 */
 		List<String> links = page.getHtml().css("div.result h3.c-title").links().all();
 		List<String> pubtimeTexts = page.getHtml().css("p.c-author","text").all();
+		List<String> morelinks = page.getHtml().css(".c-more_link").links().all();
 		List<String> pubtimes = this.extractPubtime(pubtimeTexts);
 		addLinkAndTime(links, pubtimes);
-		page.addTargetRequests(links);
+		morelinks.addAll(links);
+		page.addTargetRequests(morelinks);
 		
 		/* 如果是新闻页面 */
 		String title = page.getHtml().$("title", "text").toString();
@@ -29,7 +31,6 @@ public class BaiduNewsPageProcessor extends AbstractCrawler {
 			System.out.println((++i)+"."+title);
 			this.parseNewsHtml(page.getRawText(), page.getUrl().toString());
 		}
-
 	}
 
 	@Override

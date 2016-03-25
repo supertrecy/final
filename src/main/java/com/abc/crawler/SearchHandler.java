@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.abc.crawler.extract.SearchUrlExtractor;
+import com.abc.db.entity.NewsInfo;
 import com.abc.util.Util;
 
 import us.codecraft.webmagic.Spider;
@@ -47,12 +48,9 @@ public class SearchHandler {
 
 		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
+		
+		BaiduNewsPageProcessor.setSearchWords(null);
 
 	}
 
-	public static void main(String[] args) {
-		String keywords = "荒野猎人";
-		SearchHandler sh = new SearchHandler();
-		sh.startNewsSearch(Util.normalizeKeyword(keywords));
-	}
 }

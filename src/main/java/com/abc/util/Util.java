@@ -56,4 +56,13 @@ public class Util {
 		}
 		return sb.toString();
 	}
+	
+	public static String normalizeQueryWords(List<String> search_words) {
+		StringBuilder sb = new StringBuilder("");
+		for (String word : search_words) {
+			sb.append(word + "+");
+		}
+		String query = sb.substring(0, sb.length() - 1);
+		return query;
+	}
 }

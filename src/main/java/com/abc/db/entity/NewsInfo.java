@@ -46,10 +46,6 @@ public class NewsInfo  {
 	
 	public void setSource(String source) {this.source = source;}
 	
-	public String getRawcontent() {return rawcontent;}
-
-	public void setRawcontent(String rawcontent) {this.rawcontent = rawcontent;}
-
 	public void setSite(String site) {this.site = site;}
 
 	public void setTitle(String title) {this.title = title;}
