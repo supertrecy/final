@@ -25,7 +25,7 @@ public class SearchUrlExtractor {
 
 	public String[] getSearchUrl(List<String> queryWords, int searchEngines) {
 		List<String> urls = new LinkedList<String>();
-		int baidunewsnum = 500; // 百度新闻搜索结果数, 最大760
+		int baidunewsnum = 100; // 百度新闻搜索结果数, 最大760
 		int bingnewsnum = 500; // Bing新闻搜索结果数
 		int sogounum = 500;// Sag新闻搜索结果数,最大1000
 

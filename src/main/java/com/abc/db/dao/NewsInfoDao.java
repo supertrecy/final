@@ -1,6 +1,7 @@
 package com.abc.db.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.abc.db.DBHelper;
 import com.abc.db.entity.NewsInfo;
-import com.mysql.jdbc.PreparedStatement;
 
 /**
  * A collection of methods for extract video informations.
@@ -74,7 +74,7 @@ public class NewsInfoDao {
 		PreparedStatement stat = null;
 		try {
 			con = DBHelper.getConnection();
-			stat = (PreparedStatement) con.prepareStatement("select * from news_search_data where search_words = ?");
+			stat = con.prepareStatement("select * from news_search_data where search_words = ?");
 			stat.setString(1, keyword);
 			ResultSet rs = stat.executeQuery();
 			while (rs.next()) {
@@ -121,7 +121,7 @@ public class NewsInfoDao {
 		boolean result = false;
 		con = DBHelper.getConnection();
 		try {
-			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat = con.prepareStatement(sql);
 			stat.setString(1, news.getUrl());
 			stat.setString(2, news.getSite());
 			stat.setString(3, news.getSource());
@@ -158,7 +158,7 @@ public class NewsInfoDao {
 		boolean result = false;
 		con = DBHelper.getConnection();
 		try {
-			stat = (PreparedStatement) con.prepareStatement(sql);
+			stat = con.prepareStatement(sql);
 			stat.setString(1, url);
 			if(stat.executeQuery().next())
 				result = true;

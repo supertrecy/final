@@ -49,7 +49,7 @@ public class SearchHandler {
 		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 		
-		BaiduNewsPageProcessor.setSearchWords(null);
+		//BaiduNewsPageProcessor.setSearchWords(null);
 
 	}
 
