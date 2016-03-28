@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.abc.crawler.extract.SearchUrlExtractor;
-import com.abc.db.entity.NewsInfo;
-import com.abc.util.Util;
 
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.JsonFilePipeline;
@@ -49,7 +47,7 @@ public class SearchHandler {
 		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 		
-		//BaiduNewsPageProcessor.setSearchWords(null);
+		//BaiduNewsPageProcessor.clearSearchWords();
 
 	}
 

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.abc.db.dao.NewsDao;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.parse.HtmlParser;
@@ -44,10 +43,13 @@ public abstract class AbstractCrawler implements PageProcessor {
 	}
 
 	public static void setSearchWords(List<String> searchWords) {
-		if(AbstractCrawler.searchWords != null)
-			searchWords.clear();
 		AbstractCrawler.searchWords = searchWords;
 		searchWordsStr = Util.glueSearchWords(searchWords);
+	}
+	
+	public static void clearSearchWords(){
+		if(AbstractCrawler.searchWords != null)
+			AbstractCrawler.searchWords.clear();
 	}
 
 	public static Map<String, String> getUrlTimeMap() {
