@@ -1,5 +1,6 @@
 package com.abc.test;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class SimilarityTest {
 	
 	static{
 		map = new HashMap<>();
-		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords("二胎生下三胞胎;");
+		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords("同性恋爱情片过审;");
 		DocumentDimension dd = new DocumentDimension();
 		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
 		int i=0;
@@ -29,32 +30,65 @@ public class SimilarityTest {
 		size = i;
 	}
 	
-	@Test
-	public void testDocDistance() {
-		for (int i = 0; i < size/2; i++) {
-			System.out.println("doc:"+Similarity.docDistance(map.get(i), map.get(size-1-i)));
-		}
-	}
+//	@Test
+//	public void testDocDistance() {
+//		DecimalFormat df=new DecimalFormat("#.000000"); 
+//		for (int i = 0; i < size; i++) {
+//			for (int j = 0; j < size; j++) {
+//				System.out.print(df.format(Similarity.docDistance(map.get(i), map.get(j)))+" ");
+//			}
+//			System.out.println("/end");
+//		}
+//		System.out.println("----------------------------------------------------------------");
+//	}
 
-	@Test
-	public void testCosineDistance() {
-		for (int i = 0; i < size/2; i++) {
-			System.out.println("cos:"+Similarity.cosineDistance(map.get(i), map.get(size-1-i)));
-		}
-	}
-
+//	@Test
+//	public void testCosineDistance() {
+//		DecimalFormat df=new DecimalFormat("#0.00"); 
+//		for (int i = 0; i < size; i++) {
+//			for (int j = 0; j < size; j++) {
+//				double tmp = Similarity.cosineDistance(map.get(i), map.get(j));
+//				if(tmp > 0.5 && i >= j)
+//					System.out.print(df.format(tmp)+" ");
+//				else
+//					System.out.print("-.-- ");
+//			}
+//			System.out.println("/end");
+//			System.out.println(" ");
+//		}
+//		System.out.println("----------------------------------------------------------------");
+//	}
 	@Test
 	public void testDiceDistance() {
-		for (int i = 0; i < size/2; i++) {
-			System.out.println("dice:"+Similarity.diceDistance(map.get(i), map.get(size-1-i)));
+		DecimalFormat df=new DecimalFormat("#0.00"); 
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				double tmp = Similarity.diceDistance(map.get(i), map.get(j));
+				if(tmp > 0.5 && i >= j)
+					System.out.print(df.format(tmp)+" ");
+				else
+					System.out.print("-.-- ");
+			}
+			System.out.println("/end");
+			System.out.println(" ");
 		}
+		System.out.println("----------------------------------------------------------------");
 	}
 
 	@Test
 	public void testJaccardDistance() {
-		for (int i = 0; i < size/2; i++) {
-			System.out.println("j:"+Similarity.jaccardDistance(map.get(i), map.get(size-1-i)));
+		DecimalFormat df=new DecimalFormat("#0.00"); 
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				double tmp = Similarity.jaccardDistance(map.get(i), map.get(j));
+				if(tmp > 0.5 && i >= j)
+					System.out.print(df.format(tmp)+" ");
+				else
+					System.out.print("-.-- ");
+			}
+			System.out.println("/end");
+			System.out.println(" ");
 		}
+		System.out.println("----------------------------------------------------------------");
 	}
-
 }

@@ -24,9 +24,9 @@ public class Similarity {
 		for (int i = 0; i < length; i++) {
 			double num1 = v1.get(i);
 			double num2 = v2.get(i);
-			if (num1 == 0)
+			if (num1 != 0)
 				tmp1 += num1 * num1;
-			if (num2 == 0)
+			if (num2 != 0)
 				tmp2 += num2 * num2;
 		}
 		denominator = Math.sqrt(tmp1 * tmp2);
@@ -40,9 +40,9 @@ public class Similarity {
 		for (int i = 0; i < length; i++) {
 			double num1 = v1.get(i);
 			double num2 = v2.get(i);
-			if (num1 == 0)
+			if (num1 != 0)
 				denominator += num1 * num1;
-			if (num2 == 0)
+			if (num2 != 0)
 				denominator += num2 * num2;
 		}
 		return numerator / denominator;
@@ -55,9 +55,9 @@ public class Similarity {
 		for (int i = 0; i < length; i++) {
 			double num1 = v1.get(i);
 			double num2 = v2.get(i);
-			if (num1 == 0)
+			if (num1 != 0)
 				denominator += num1 * num1;
-			if (num2 == 0)
+			if (num2 != 0)
 				denominator += num2 * num2;
 		}
 		denominator -= numerator;
