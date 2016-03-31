@@ -17,7 +17,7 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import com.abc.vsm.Seg;
 import com.abc.vsm.Vsm;
-import com.abc.vsm.TFIDF;
+import com.abc.vsm.TF;
 
 public class ComputeSimOfTwo {
 	private static ArrayList<String> FileList = new ArrayList<String>(); // the list of file

@@ -17,7 +17,7 @@ import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
-public class TFIDF {
+public class TF {
 
     /**
      * @param args
@@ -77,7 +77,7 @@ public class TFIDF {
     public static ArrayList<String> cutWords(String file) throws IOException{
         
         ArrayList<String> words = new ArrayList<String>();
-        String text = TFIDF.readFile(file);
+        String text = TF.readFile(file);
         IKAnalyzer analyzer = new IKAnalyzer();
 //        words = analyzer.split(text);
         try {
@@ -118,7 +118,7 @@ public class TFIDF {
         HashMap<String, Float> resTF = new HashMap<String, Float>();
         
         int wordLen = cutwords.size();
-        HashMap<String, Integer> intTF = TFIDF.normalTF(cutwords); 
+        HashMap<String, Integer> intTF = TF.normalTF(cutwords); 
         
         Iterator iter = intTF.entrySet().iterator(); //iterator for that get from TF
         while(iter.hasNext()){
@@ -133,12 +133,12 @@ public class TFIDF {
     public static HashMap<String, HashMap<String, Integer>> normalTFAllFiles(String dirc) throws IOException{
         HashMap<String, HashMap<String, Integer>> allNormalTF = new HashMap<String, HashMap<String,Integer>>();
         
-        List<String> filelist = TFIDF.readDirs(dirc);
+        List<String> filelist = TF.readDirs(dirc);
         for(String file : filelist){
             HashMap<String, Integer> dict = new HashMap<String, Integer>();
-            ArrayList<String> cutwords = TFIDF.cutWords(file); //get cut word for one file
+            ArrayList<String> cutwords = TF.cutWords(file); //get cut word for one file
             
-            dict = TFIDF.normalTF(cutwords);
+            dict = TF.normalTF(cutwords);
             allNormalTF.put(file, dict);
         }    
         return allNormalTF;
@@ -147,13 +147,13 @@ public class TFIDF {
     //tf for all file
     public static HashMap<String,HashMap<String, Float>> tfAllFiles(String dirc) throws IOException{
         HashMap<String, HashMap<String, Float>> allTF = new HashMap<String, HashMap<String, Float>>();
-        List<String> filelist = TFIDF.readDirs(dirc);
+        List<String> filelist = TF.readDirs(dirc);
         
         for(String file : filelist){
             HashMap<String, Float> dict = new HashMap<String, Float>();
-            ArrayList<String> cutwords = TFIDF.cutWords(file); //get cut words for one file
+            ArrayList<String> cutwords = TF.cutWords(file); //get cut words for one file
             
-            dict = TFIDF.tf(cutwords);
+            dict = TF.tf(cutwords);
             allTF.put(file, dict);
         }
         return allTF;
