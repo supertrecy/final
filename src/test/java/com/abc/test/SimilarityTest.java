@@ -20,7 +20,7 @@ public class SimilarityTest {
 	
 	static{
 		map = new HashMap<>();
-		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords("同性恋爱情片过审;");
+		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords("二胎生下三胞胎;");
 		DocumentDimension dd = new DocumentDimension();
 		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
 		int i=0;
@@ -42,12 +42,28 @@ public class SimilarityTest {
 //		System.out.println("----------------------------------------------------------------");
 //	}
 
+	@Test
+	public void testCosineDistance() {
+		DecimalFormat df=new DecimalFormat("#0.00"); 
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				double tmp = Similarity.cosineDistance(map.get(i), map.get(j));
+				if(tmp > 0.5 && i >= j)
+					System.out.print(df.format(tmp)+" ");
+				else
+					System.out.print("-.-- ");
+			}
+			System.out.println("/end");
+			System.out.println(" ");
+		}
+		System.out.println("----------------------------------------------------------------");
+	}
 //	@Test
-//	public void testCosineDistance() {
+//	public void testDiceDistance() {
 //		DecimalFormat df=new DecimalFormat("#0.00"); 
 //		for (int i = 0; i < size; i++) {
 //			for (int j = 0; j < size; j++) {
-//				double tmp = Similarity.cosineDistance(map.get(i), map.get(j));
+//				double tmp = Similarity.diceDistance(map.get(i), map.get(j));
 //				if(tmp > 0.5 && i >= j)
 //					System.out.print(df.format(tmp)+" ");
 //				else
@@ -58,37 +74,21 @@ public class SimilarityTest {
 //		}
 //		System.out.println("----------------------------------------------------------------");
 //	}
-	@Test
-	public void testDiceDistance() {
-		DecimalFormat df=new DecimalFormat("#0.00"); 
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				double tmp = Similarity.diceDistance(map.get(i), map.get(j));
-				if(tmp > 0.5 && i >= j)
-					System.out.print(df.format(tmp)+" ");
-				else
-					System.out.print("-.-- ");
-			}
-			System.out.println("/end");
-			System.out.println(" ");
-		}
-		System.out.println("----------------------------------------------------------------");
-	}
-
-	@Test
-	public void testJaccardDistance() {
-		DecimalFormat df=new DecimalFormat("#0.00"); 
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				double tmp = Similarity.jaccardDistance(map.get(i), map.get(j));
-				if(tmp > 0.5 && i >= j)
-					System.out.print(df.format(tmp)+" ");
-				else
-					System.out.print("-.-- ");
-			}
-			System.out.println("/end");
-			System.out.println(" ");
-		}
-		System.out.println("----------------------------------------------------------------");
-	}
+//
+//	@Test
+//	public void testJaccardDistance() {
+//		DecimalFormat df=new DecimalFormat("#0.00"); 
+//		for (int i = 0; i < size; i++) {
+//			for (int j = 0; j < size; j++) {
+//				double tmp = Similarity.jaccardDistance(map.get(i), map.get(j));
+//				if(tmp > 0.5 && i >= j)
+//					System.out.print(df.format(tmp)+" ");
+//				else
+//					System.out.print("-.-- ");
+//			}
+//			System.out.println("/end");
+//			System.out.println(" ");
+//		}
+//		System.out.println("----------------------------------------------------------------");
+//	}
 }

@@ -3,6 +3,7 @@ package com.abc.db.entity;
 public class NewsInfo  {
 	public static final String DIR_NAME = "news_info";
 	
+	private int id;
 	private String url = ""; 			// 新闻url
 	private String site = ""; 			// 新闻站点
 	private String title = ""; 			// 新闻标题
@@ -16,6 +17,10 @@ public class NewsInfo  {
 	
 	public NewsInfo() {}
 	
+	public int getId() { return id; }
+	
+	public void setId(int id) { this.id = id; }
+
 	public String getUrl() { return url; }
 	
 	public String getSite() { return site; }

@@ -1,6 +1,6 @@
 package com.abc.vsm;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +73,7 @@ public class Weight {
 	}
 	
 	private List<Double> initVector(){
-		List<Double> vector = new LinkedList<>();
+		List<Double> vector = new ArrayList<>(length_of_vector);
 		for (int i = 0; i < length_of_vector; i++) {
 			vector.add(0.0);
 		}

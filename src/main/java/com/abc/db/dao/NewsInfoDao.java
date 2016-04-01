@@ -42,6 +42,7 @@ public class NewsInfoDao {
 				news.setSource(rs.getString("SOURCE"));
 				news.setTitle(rs.getString("TITLE"));
 				news.setUrl(rs.getString("URL"));
+				news.setId(rs.getInt("ID"));
 				newsList.add(news);
 			}
 		} catch (SQLException e) {
@@ -89,6 +90,7 @@ public class NewsInfoDao {
 				news.setSource(rs.getString("SOURCE"));
 				news.setTitle(rs.getString("TITLE"));
 				news.setUrl(rs.getString("URL"));
+				news.setId(rs.getInt("ID"));
 				newsList.add(news);
 			}
 		} catch (SQLException e) {
