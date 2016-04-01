@@ -13,13 +13,22 @@ import com.abc.db.entity.NewsInfo;
  * 
  * @author w_w
  */
-public class AGNES {
+public class AGNEST {
 
-	private Map<NewsInfo, Integer> newsMap = null;
-	private int clusterNum;
-	private SimilarityMatrix smatrix;
+	protected Map<NewsInfo, Integer> newsMap = null;
+	protected int clusterNum;
+	protected SimilarityMatrix smatrix;
+	
+	public AGNEST(List<NewsInfo> newsList) {
+		this.smatrix = new SimilarityMatrix(newsList);
+		this.newsMap = new HashMap<>();
+		int index = 0;
+		for (NewsInfo newsInfo : newsList) {
+			newsMap.put(newsInfo, index++);
+		}
+	}
 
-	public AGNES(List<NewsInfo> newsList, int clusterNum) {
+	public AGNEST(List<NewsInfo> newsList, int clusterNum) {
 		this.clusterNum = clusterNum;
 		this.smatrix = new SimilarityMatrix(newsList);
 		this.newsMap = new HashMap<>();
@@ -42,7 +51,7 @@ public class AGNES {
 		return result;
 	}
 
-	private List<Cluster> mergeCluster(Cluster cluster1, List<Cluster> result) {
+	protected List<Cluster> mergeCluster(Cluster cluster1, List<Cluster> result) {
 		double max_similarity = 0.0;
 		Cluster closest_cluster = null;
 		for (Cluster cluster2 : result) {
@@ -65,7 +74,7 @@ public class AGNES {
 		return result;
 	}
 
-	private List<Cluster> initClusters() {
+	protected List<Cluster> initClusters() {
 		List<Cluster> result = new LinkedList<>();
 		Set<NewsInfo> newsSet = newsMap.keySet();
 		for (NewsInfo newsInfo : newsSet) {
@@ -76,7 +85,7 @@ public class AGNES {
 		return result;
 	}
 
-	private double compareClusters(Cluster c1, Cluster c2) {
+	protected double compareClusters(Cluster c1, Cluster c2) {
 		List<NewsInfo> pointsA = c1.getPoints();
 		List<NewsInfo> pointsB = c2.getPoints();
 		double max_similarity = 0.0;
