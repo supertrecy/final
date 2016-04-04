@@ -13,12 +13,12 @@ import com.abc.db.entity.NewsInfo;
  */
 public class ImprovedAGNEST extends AGNEST{
 	
-	public ImprovedAGNEST(List<NewsInfo> newsList){
-		super(newsList);
+	public ImprovedAGNEST(List<NewsInfo> newsList,boolean needTag){
+		super(newsList,needTag);
 	}
 	
-	public ImprovedAGNEST(List<NewsInfo> newsList, int clusterNum) {
-		super(newsList, clusterNum);
+	public ImprovedAGNEST(List<NewsInfo> newsList, int clusterNum,boolean needTag) {
+		super(newsList, clusterNum, needTag);
 	}
 
 	

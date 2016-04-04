@@ -15,8 +15,8 @@ public class ImprovedAGNEST2 extends ImprovedAGNEST {
 	private double lowerLimitSimilarity;
 	private List<Cluster> result;
 
-	public ImprovedAGNEST2(List<NewsInfo> newsList, double lowerLimitSimilarity) {
-		super(newsList);
+	public ImprovedAGNEST2(List<NewsInfo> newsList, double lowerLimitSimilarity,boolean needTag) {
+		super(newsList,needTag);
 		this.lowerLimitSimilarity = lowerLimitSimilarity;
 	}
 

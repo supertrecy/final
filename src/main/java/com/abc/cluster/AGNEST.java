@@ -13,14 +13,19 @@ import com.abc.db.entity.NewsInfo;
  * 
  * @author w_w
  */
-public class AGNEST {
+public class AGNEST implements AttachTag{
 
 	protected Map<NewsInfo, Integer> newsMap = null;
 	protected int clusterNum;
 	protected SimilarityMatrix smatrix;
-	
-	public AGNEST(List<NewsInfo> newsList) {
-		this.smatrix = new SimilarityMatrix(newsList);
+	private boolean needTag;
+	/**
+	 * 专为ImprovedAGNEST2定制的
+	 * @param newsList
+	 */
+	public AGNEST(List<NewsInfo> newsList,boolean needTag) {
+		this.needTag = needTag;
+		this.smatrix = new SimilarityMatrix(newsList,needTag);
 		this.newsMap = new HashMap<>();
 		int index = 0;
 		for (NewsInfo newsInfo : newsList) {
@@ -28,14 +33,9 @@ public class AGNEST {
 		}
 	}
 
-	public AGNEST(List<NewsInfo> newsList, int clusterNum) {
+	public AGNEST(List<NewsInfo> newsList, int clusterNum,boolean needTag) {
+		this(newsList,needTag);
 		this.clusterNum = clusterNum;
-		this.smatrix = new SimilarityMatrix(newsList);
-		this.newsMap = new HashMap<>();
-		int index = 0;
-		for (NewsInfo newsInfo : newsList) {
-			newsMap.put(newsInfo, index++);
-		}
 	}
 
 	public List<Cluster> clustering() {
@@ -104,5 +104,22 @@ public class AGNEST {
 		}
 		return max_similarity;
 	}
+	
+	@Override
+	public Map<String, Double> getNewsTagMap(NewsInfo news){
+		if(needTag){
+			return smatrix.getNewsTagMap(news);
+		}
+		else
+			return null;
+	}
 
+	@Override
+	public List<String> getNewsTagList(NewsInfo news) {
+		if(needTag){
+			return smatrix.getNewsTagList(news);
+		}
+		else
+			return null;
+	}
 }
