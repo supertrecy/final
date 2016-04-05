@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.abc.cluster.AGNEST;
+import com.abc.cluster.Cluster;
+import com.abc.cluster.ImprovedAGNEST2;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.vsm.Vsm;
@@ -39,15 +41,28 @@ public class TraceToSourceServlet extends HttpServlet {
 		}
 		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
 		
+//		JSONObject obj = new JSONObject();
+//		JSONArray array = new JSONArray();
+//		obj.put("name", keyword);
+//		int i = 0;
+//		for (Iterator<List<NewsInfo>> iterator = newsGroup.iterator(); iterator.hasNext();) {
+//			List<NewsInfo> news =  iterator.next();
+//			if (news.size() > 1) {
+//				array.add(new ListToTree().listToTree(news));
+//				System.out.println("构建第"+(++i)+"棵树");
+//			}
+//		}
+		AGNEST al = new ImprovedAGNEST2(newsList, 1.0, false);
+		List<Cluster> clusters = al.clustering();
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
 		obj.put("name", keyword);
 		int i = 0;
-		for (Iterator iterator = newsGroup.iterator(); iterator.hasNext();) {
-			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
+		for (Cluster cluster : clusters) {
+			List<NewsInfo> news = cluster.getPoints();
 			if (news.size() > 1) {
 				array.add(new ListToTree().listToTree(news));
-				System.out.println("构建第"+(++i)+"棵树");
+				System.out.println("第"+(++i)+"棵树");
 			}
 		}
 		obj.put("children", array);

@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.abc.cluster.AGNEST;
+import com.abc.cluster.Cluster;
+import com.abc.cluster.ImprovedAGNEST2;
 import com.abc.db.TreeNode;
-import com.abc.db.dao.NewsDao;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.vsm.Vsm;
@@ -19,8 +21,50 @@ import net.sf.json.JSONObject;
 
 public class ListToTree {
 	public static void main(String[] args) {
-		test2("傅艺伟");
+		test3("二胎生下三胞胎;");
 	}
+	/**
+	 * 
+	 * @param keyword
+	 */
+	private static void test3(String keyword) {
+		long start = System.currentTimeMillis();
+		List<NewsInfo> newsList = null;
+		if(keyword == null || "".equals(keyword)){
+			newsList = NewsInfoDao.getNewsList();
+		}else{
+			newsList = NewsInfoDao.getNewsListBySearchWords(keyword);
+		}
+		AGNEST al = new ImprovedAGNEST2(newsList, 0.7, false);
+		List<Cluster> clusters = al.clustering();
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		obj.put("name", keyword);
+		int i = 0;
+		for (Cluster cluster : clusters) {
+			List<NewsInfo> news = cluster.getPoints();
+			if (news.size() > 1) {
+				array.add(new ListToTree().listToTree(news));
+				System.out.println("第"+(++i)+"棵树");
+			}
+		}
+		obj.put("children", array);
+		//-------------------------------------//
+		System.out.println("写入到json文件中...");
+		try {
+			Writer out = new PrintWriter(new File("E:/jee_workspace/final/WebContent/flare.json"),"utf-8");
+			out.write(obj.toString());
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("写入完毕");
+		//-------------------------------------//
+		double time = (double) (System.currentTimeMillis() - start) / 1000;
+		System.out.println("总共" + newsList.size() + "篇文章");
+		System.out.println("总耗时" + time + "秒");
+	}
+	
 	/**
 	 * 比test1多一个搜索关键词
 	 * @param keyword

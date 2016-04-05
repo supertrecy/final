@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.abc.db.entity.NewsInfo;
 import com.abc.vsm.DocumentDimension;

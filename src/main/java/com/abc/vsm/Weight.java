@@ -16,6 +16,8 @@ public class Weight {
 	private static Map<String, Integer> allwords;
 	private static int lengthOfVector;
 	private Map<String, Double> wordWeightMap;
+	private DecimalFormat df = new DecimalFormat("#0.000");
+	private final int TAGS_NUM = 15;
 
 	public Weight(Map<String, Integer> allwords) {
 		Weight.allwords = allwords;
@@ -108,9 +110,6 @@ public class Weight {
 		}
 		return vector;
 	}
-
-	private DecimalFormat df = new DecimalFormat("#0.000");
-	private final int TAGS_NUM = 10;
 
 	private Map<String, Double> optimizeMap(Map<String, Double> initMap) {
 		Map<String, Double> sortedMap = new LinkedHashMap<String, Double>();
