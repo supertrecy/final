@@ -144,6 +144,7 @@ public class ListToTree {
 	public JSONObject listToTree(List<NewsInfo> list) { // TODO change String to other object,such as TempDataStructure
 		List<TreeNode<String>> queue = new LinkedList<TreeNode<String>>();
 		String title = list.get(0).getTitle();
+		int i=0;
 		for (NewsInfo news : list) {
 			String source = news.getSource();
 			String site = news.getSite();
@@ -156,6 +157,8 @@ public class ListToTree {
 			}else{
 				// insert node to queue's tree
 				insertNode(source, site, queue);
+				System.out.println((++i)+"."+news.getContent());
+				System.out.println("------------------------------------------------------");
 			}
 		}
 		//change tree to json format

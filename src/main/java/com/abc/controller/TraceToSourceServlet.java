@@ -52,7 +52,7 @@ public class TraceToSourceServlet extends HttpServlet {
 //				System.out.println("构建第"+(++i)+"棵树");
 //			}
 //		}
-		AGNEST al = new ImprovedAGNEST2(newsList, 1.0, false);
+		AGNEST al = new ImprovedAGNEST2(newsList, 0.90, false);
 		List<Cluster> clusters = al.clustering();
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
