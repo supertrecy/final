@@ -71,10 +71,14 @@ public class Shiji21Parser extends SpecialNewsParser {
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) {
 				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
+			}else{
+				originalSourceText = "";
 			}
 		}
 		return source;

@@ -96,14 +96,19 @@ public class WangyiParser extends SpecialNewsParser{
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1);
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) { 
-				source = matcher.group(1).replace((char)12288, ' ').trim();;
+				source = matcher.group(1).replace((char)12288, ' ').trim();
+				originalSourceText = matcher.group(0).trim();
 			} else {
 				matcher = pSource3.matcher(content);
 				if (matcher.find()) { 
 					source = matcher.group(1);
+					originalSourceText = matcher.group(0).trim();
+				}else{
+					originalSourceText = "";
 				}
 			}
 		}

@@ -43,6 +43,7 @@ public class NewsInfoDao {
 				news.setTitle(rs.getString("TITLE"));
 				news.setUrl(rs.getString("URL"));
 				news.setId(rs.getInt("ID"));
+				news.setSourceUrl(rs.getString("SOURCE_URL"));
 				newsList.add(news);
 			}
 		} catch (SQLException e) {
@@ -91,6 +92,7 @@ public class NewsInfoDao {
 				news.setTitle(rs.getString("TITLE"));
 				news.setUrl(rs.getString("URL"));
 				news.setId(rs.getInt("ID"));
+				news.setSourceUrl(rs.getString("SOURCE_URL"));
 				newsList.add(news);
 			}
 		} catch (SQLException e) {
@@ -117,7 +119,7 @@ public class NewsInfoDao {
 	}
 
 	public static boolean addNews(NewsInfo news) {
-		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT,KEYWORDS,FETCH_TIME,SEARCH_WORDS) values (?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into  news_search_data(URL,SITE,SOURCE,TITLE,PUBLISH_TIME,CONTENT,KEYWORDS,FETCH_TIME,SEARCH_WORDS,SOURCE_URL) values (?,?,?,?,?,?,?,?,?,?)";
 		PreparedStatement stat = null;
 		Connection con = null;
 		boolean result = false;
@@ -133,6 +135,7 @@ public class NewsInfoDao {
 			stat.setString(7, news.getKeywords());
 			stat.setString(8, news.getFetchtime());
 			stat.setString(9, news.getSearchWords());
+			stat.setString(10, news.getSourceUrl());
 			result = stat.executeUpdate()>0?true:false;
 		} catch (SQLException e) {
 			e.printStackTrace();

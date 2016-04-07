@@ -58,13 +58,13 @@ public abstract class AbstractCrawler implements PageProcessor {
 
 	void parseNewsHtml(String html, String url) {
 		if(!NewsInfoDao.isExist(url)){
-			System.out.println("开始处理："+url);
+//			System.out.println("开始处理："+url);
 			HtmlParser parser = new HtmlParser();
 			NewsInfo news = parser.getParse(searchWords, html, url,urlTimeMap.get(url));
 			if (news != null){
-				System.out.println("成功解析："+news.getUrl());
+//				System.out.println("成功解析："+news.getUrl());
 				news.setSearchWords(searchWordsStr);
-				NewsInfoDao.addNews(news);
+//				NewsInfoDao.addNews(news);
 			}
 		}
 	}

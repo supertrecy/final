@@ -14,6 +14,7 @@ public class NewsInfo  {
 	private String content = ""; 		// 正文
 	private String rawcontent = ""; 	// 原始网页
 	private String searchWords = ""; 		// 评论信息
+	private String sourceUrl = "";
 	
 	public NewsInfo() {}
 	
@@ -58,8 +59,12 @@ public class NewsInfo  {
 	public void setKeywords(String keywords) {this.keywords = keywords;}
 
 	public String getSearchWords() {return searchWords;}
-
+	
 	public void setSearchWords(String searchWords) {this.searchWords = searchWords;}
+	
+	public String getSourceUrl() { return sourceUrl; }
+
+	public void setSourceUrl(String sourceUrl) { this.sourceUrl = sourceUrl; }
 
 	public void setBaseInfo(String site, String title, String pubtime, 
 			String keywords, String source) {

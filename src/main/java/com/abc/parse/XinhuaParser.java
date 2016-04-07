@@ -21,8 +21,8 @@ public class XinhuaParser extends SpecialNewsParser {
 	private static final String pubtimeRegex = "<span id=\"pubtime\">(.*?)</span>";
 	private static final String pubtimeRegex2 = "\\d{4}-\\d{2}/\\d{2}";
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
-	private static final String sourceRegex = "<span id=\"source\">\\s*来源：(.*?)</span>";
-	private static final String sourceRegex2 = "来源：\\s*(?:<a.*?>)?(.*?)</"; // 地方频道
+	private static final String sourceRegex = "<span id=\"source\">\\s*来源：\\s*?(.*?)</span>";
+	private static final String sourceRegex2 = "来源：\\s+(?:<a.*?>)?(.*?)</"; // 地方频道
 
 	private static Pattern pTitle;
 	private static Pattern pPubtime;
@@ -105,10 +105,14 @@ public class XinhuaParser extends SpecialNewsParser {
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) {
 			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) {
 				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
+			} else {
+				originalSourceText = "";
 			}
 		}
 		source = source.replaceAll("&nbsp;", "").trim();

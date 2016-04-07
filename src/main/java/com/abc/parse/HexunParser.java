@@ -66,7 +66,8 @@ public class HexunParser extends SpecialNewsParser {
 			title = matcher.group(1).trim();
             int index = title.indexOf("-");
             if (index != -1) {
-            	title = title.substring(0, index);      	
+            	title = title.substring(0, index); 
+            	
             }
 		}
 		return title;

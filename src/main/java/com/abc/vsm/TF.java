@@ -223,7 +223,6 @@ public class TF {
         
     }
     public static void main(String[] args) throws IOException {
-        // TODO Auto-generated method stub
         String file = "E:/testfiles";
 
         HashMap<String,HashMap<String, Float>> all_tf = tfAllFiles(file);

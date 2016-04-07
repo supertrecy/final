@@ -18,9 +18,9 @@ public class PeopleParser extends SpecialNewsParser {
 	/** Used to extract base information */
 	private static final String pubtimeRegex = "<span id=\"p_publishtime\">(.*?)</span>"; 
 	private static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
-	private static final String sourceRegex = "<meta name=\"source\" content=\"(?:来源|來源)：(.*?)\"";
+	private static final String sourceRegex3 = "<meta name=\"source\" content=\"(?:来源|來源)：(.*?)\"";
 	private static final String sourceRegex2 = "<meta name=\"source\" content=\"(.*?)\">";
-	private static final String sourceRegex3 = "来源：(.*?)\\s";
+	private static final String sourceRegex = "(?:来源|来源于|稿源|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
 	
 	private static Pattern pTitle;
 	private static Pattern pPubtime;
@@ -85,14 +85,19 @@ public class PeopleParser extends SpecialNewsParser {
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) { 
 				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
 			} else {
 				matcher = pSource3.matcher(content);
 				if (matcher.find()) { 
 					source = matcher.group(1).trim();
+					originalSourceText = matcher.group(0).trim();
+				}else{
+					originalSourceText = "";
 				}
 			}
 		}

@@ -13,30 +13,30 @@ import com.abc.db.entity.NewsInfo;
 import com.abc.util.URLUtil;
 
 /**
- * http://citybank.jrj.com.cn/2014/05/13071517197394-1.shtml 
- * http://www.akxw.cn/finance/fund/ipodc/99870.html
- * 匹配不出source
+ * http://citybank.jrj.com.cn/2014/05/13071517197394-1.shtml
+ * http://www.akxw.cn/finance/fund/ipodc/99870.html 匹配不出source
+ * 
  * @author hjy
  *
  */
 public class CommonParser extends NewsParser {
 	public static final Logger LOG = LoggerFactory.getLogger(CommonParser.class);
-	
+
 	/** Used to extract base information */
 	private static final String titleRegex = "<title.*?>([^<]+)</title>";
 	private static final String keywordsRegex = "<meta.*?name=\"?keywords\"?.*?content=\"?(.*?)[\"/]";
 	private static final String sourceRegex = "(?:来源|来源于|稿源|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
-	private static final String sourceRegex2 = "(?:来源|来自)[：:\\s]\\s*?(.*?)\\s*?[<&\\)）]"; // 纯文字                                                                                                                       
+	private static final String sourceRegex2 = "(?:来源|来自)[：:\\s]\\s*?(.*?)\\s*?[<&\\)）]"; // 纯文字
 	private static final String sourceRegex3 = "<meta name=\"source\" content=\"(.*?)\">"; // 央视网
-	
+
 	private static Pattern pTitle;
 	private static Pattern pKeywords;
 	private static Pattern pSource;
 	private static Pattern pSource2;
 	private static Pattern pSource3;
-	
+
 	private static Map<String, String> siteMap = new HashMap<String, String>();
-	
+
 	static {
 		pTitle = Pattern.compile(titleRegex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE);
@@ -159,9 +159,9 @@ public class CommonParser extends NewsParser {
 		siteMap.put("zgswcn.com", "中国商网");
 		siteMap.put("zhuayoukong.com", "爪游控");
 	}
-	
+
 	@Override
-	public NewsInfo getParse(String content, String encoding,String url) {
+	public NewsInfo getParse(String content, String encoding, String url) {
 		NewsInfo info = new NewsInfo();
 		String contentStr = content;
 		String curTime = df.format(System.currentTimeMillis());
@@ -170,9 +170,10 @@ public class CommonParser extends NewsParser {
 		getBaseInfo(info, url, contentStr);
 		return info;
 	}
-	
+
 	/**
 	 * 提取基本信息
+	 * 
 	 * @param info
 	 * @param content
 	 */
@@ -181,97 +182,110 @@ public class CommonParser extends NewsParser {
 		String title = "";
 		String pubtime = "";
 		String keywords = "";
-        String source = "";
-        
+		String source = "";
+
 		/*** 提取标题信息 ***/
 		Matcher matcher = pTitle.matcher(content);
 		if (matcher.find()) {
 			String rowtitle = matcher.group(1).trim();
 			title = rowtitle.replaceAll("\n", ""); // 标题占据多行时，将其变换为一行
-//			System.out.println(rowtitle);
+			// System.out.println(rowtitle);
 			int index = title.indexOf("-");
-	        if (index != -1)
-	            title = title.substring(0, index).trim();      	
-	        index = title.indexOf("_");
-	        if (index != -1)
-	            title = title.substring(0, index).trim(); 
-	        index = title.indexOf("―");
-	        if (index != -1)
-	            title = title.substring(0, index).trim();
-	        index = title.indexOf("|");
-	        if (index != -1)
-	            title = title.substring(0, index).trim();
-	        
-	        /*** 提取站点信息 ***/
-	        String domain = "";
-	        try {
+			if (index != -1)
+				title = title.substring(0, index).trim();
+			index = title.indexOf("_");
+			if (index != -1)
+				title = title.substring(0, index).trim();
+			index = title.indexOf("―");
+			if (index != -1)
+				title = title.substring(0, index).trim();
+			index = title.indexOf("|");
+			if (index != -1)
+				title = title.substring(0, index).trim();
+
+			/*** 提取站点信息 ***/
+			String domain = "";
+			try {
 				domain = URLUtil.getDomainName(url);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 			if (siteMap.containsKey(domain)) {
 				site = siteMap.get(domain);
 			} else { // 从标题中提取site
-		        int index2 = rowtitle.lastIndexOf("-"); // 标识1 短横线
-		        if (index2 != -1) {
-		        	site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
-		        } else {
-		        	index2 = rowtitle.lastIndexOf("_"); // 标识2
-			        if (index2 != -1) {
-			        	site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
-			        }
-		        }
-		        index2 = rowtitle.lastIndexOf("―"); // 标识3 长横线
-		        if (index2 != -1) {
-		        	site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
-		        }
-		        index2 = site.lastIndexOf(" "); 
-		        if (index2 != -1) {
-		        	site = site.substring(index2 + 1, site.length()).trim();
-		        }
-		        
-		        site = site.replaceAll("\\(.*?\\)", "");
-		        
-		        if (site.length() > 15) {
-		        	site = "";
-		        }
-			}	
+				int index2 = rowtitle.lastIndexOf("-"); // 标识1 短横线
+				if (index2 != -1) {
+					site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
+				} else {
+					index2 = rowtitle.lastIndexOf("_"); // 标识2
+					if (index2 != -1) {
+						site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
+					}
+				}
+				index2 = rowtitle.lastIndexOf("―"); // 标识3 长横线
+				if (index2 != -1) {
+					site = rowtitle.substring(index2 + 1, rowtitle.length()).trim();
+				}
+				index2 = site.lastIndexOf(" ");
+				if (index2 != -1) {
+					site = site.substring(index2 + 1, site.length()).trim();
+				}
+
+				site = site.replaceAll("\\(.*?\\)", "");
+
+				if (site.length() > 15) {
+					site = "";
+				}
+			}
 			if ("".equals(site)) {
 				site = domain;
 			}
 		}
-		
-		/*** 提取关键词信息 ***/		
+
+		/*** 提取关键词信息 ***/
 		matcher = pKeywords.matcher(content);
-		if (matcher.find()) { 
-			keywords = matcher.group(1).trim(); 
+		if (matcher.find()) {
+			keywords = matcher.group(1).trim();
 		} else {
 			keywords = "";
 		}
-		
-		/*** 提取新闻来源信息 ***/	
+
+		/*** 提取新闻来源信息 ***/
+		String originalSourceText = "";
 		matcher = pSource.matcher(content);
-		if (matcher.find()) { 
+		if (matcher.find()) {
 			source = matcher.group(1).trim();
+
+			originalSourceText = matcher.group(0).trim();
+
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) {
 				source = matcher.group(1).trim();
-			} else {	
+				originalSourceText = matcher.group(0).trim();
+			} else {
 				matcher = pSource3.matcher(content);
 				if (matcher.find()) {
 					source = matcher.group(1).trim();
+					originalSourceText = matcher.group(0).trim();
+				}
+				else{
+					originalSourceText = "";
 				}
 			}
 		}
+		/*** 提取新闻来源url信息 ***/
+		info.setSourceUrl(this.extractSourceUrl(originalSourceText));;
+		
+
 		// 全角空格通过trim()去除不了，也无法通过source.indexOf(" ")找到
-		if(source!=null){
-			source = source.substring(source.lastIndexOf(">")+1);
-			if(source.lastIndexOf("<")!=-1)
-				source = source.substring(0,source.lastIndexOf("<")-1);
+		if (source != null) {
+			source = source.substring(source.lastIndexOf(">") + 1);
+			if (source.lastIndexOf("<") != -1)
+				source = source.substring(0, source.lastIndexOf("<") - 1);
 		}
-		source = source.replace((char)12288, ' ').trim(); // 将全角空格替换为普通空格
+		source = source.replace((char) 12288, ' ').trim(); // 将全角空格替换为普通空格
 		source = source.replace("[", "").replace("]", "").replace("作者：", "").replaceAll("&nbsp;", "").trim();
-		
-		
+
 		/* 格式化来源信息 */
 		int index = -1;
 		if ((index = source.indexOf(' ')) != -1) {
@@ -283,8 +297,8 @@ public class CommonParser extends NewsParser {
 		if ((index = source.indexOf("－")) != -1) {
 			source = source.substring(0, index);
 		}
-		
+
 		info.setBaseInfo(site, title, pubtime, keywords, source);
 	}
-	
+
 }

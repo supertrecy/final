@@ -51,6 +51,9 @@ public class GuangmingParser extends SpecialNewsParser {
 		if (matcher.find()) {
 			source = matcher.group(1);
 			source = source.replace((char) 12288, ' ').trim(); // 特殊空白符
+			originalSourceText = matcher.group(0).trim();
+		}else{
+			originalSourceText = "";
 		}
 		return source;
 	}

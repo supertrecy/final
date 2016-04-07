@@ -22,6 +22,7 @@ public class SiChuanNewsParser extends SpecialNewsParser {
 	private static final String sourceRegex = "来源：(?:<a.*?>)?(.*?)(?:<.*?>)?\\s*】";
 	private static final String sourceRegex2 = "来源[：:]([^<>\\s]+)\\s"; 
 	private static final String sourceRegex3 = "来源：</span><font.*?><span.*?><a.*?>(.*?)</a>"; 
+	private static final String sourceRegex4 = "(?:来源|来源于|稿源|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
 	
 	private static Pattern pTitle;
 	private static Pattern pPubtime;
@@ -29,6 +30,7 @@ public class SiChuanNewsParser extends SpecialNewsParser {
 	private static Pattern pSource;
 	private static Pattern pSource2;
 	private static Pattern pSource3;
+	private static Pattern pSource4;
 	
 	protected static String site="四川新闻网";
 	
@@ -39,6 +41,7 @@ public class SiChuanNewsParser extends SpecialNewsParser {
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 		pSource3 = Pattern.compile(sourceRegex3, Pattern.CASE_INSENSITIVE);
+		pSource4 = Pattern.compile(sourceRegex4, Pattern.CASE_INSENSITIVE);
 	}
 	
 	@Override
@@ -76,14 +79,25 @@ public class SiChuanNewsParser extends SpecialNewsParser {
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) { 
 				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
 			} else {
 				matcher = pSource3.matcher(content);
-				if (matcher.find()) {
+				if (matcher.find()) { 
 					source = matcher.group(1).trim();
+					originalSourceText = matcher.group(0).trim();
+				} else {
+					matcher = pSource4.matcher(content);
+					if (matcher.find()) {
+						source = matcher.group(1).trim();
+						originalSourceText = matcher.group(0).trim();
+					}else{
+						originalSourceText = "";
+					}
 				}
 			}
 		}

@@ -29,7 +29,7 @@ public class Util {
 			if (!f.exists())
 				f.createNewFile();
 			Writer out = new OutputStreamWriter(new FileOutputStream(f, true), "UTF-8");
-			String link = "<a href=\"" + url + "\">" + url + "</a><br>";
+			String link = "<a target=\"_blank\" href=\"" + url + "\">" + url + "</a><br>";
 			out.write(link);
 			out.close();
 		} catch (FileNotFoundException e) {

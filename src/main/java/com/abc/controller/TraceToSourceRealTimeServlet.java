@@ -42,41 +42,38 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		/* 从数据库中获取本次关键词相关的新闻列表 */
 		newsList = NewsInfoDao.getNewsListBySearchWords(Util.glueSearchWords(search_words));
 
-		/* 根据新闻内容对新闻列表进行分类 */
-		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
-		
-		/* TODO 执行二次搜索，增加数据量 */
-		
-
-		/* 把子列表先转化为树，再把树列表转化为JsonObject */
-		JSONObject obj = new JSONObject();
-		JSONArray array = new JSONArray();
-		obj.put("name", keyword);
-		int i = 0;
-		for (Iterator<List<NewsInfo>> iterator = newsGroup.iterator(); iterator.hasNext();) {
-			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
-			if (news.size() > 1) {
-				array.add(new ListToTree().listToTree(news));
-				System.out.println("构建第" + (++i) + "棵树");
-			}
-		}
-		obj.put("children", array);
-
-		/* 把这个jsonobject写入到flare.json文件中，方便d3.js插件通过使用这个文件内容进行可视化 */
-		System.out.println("写入到json文件中...");
-		try {
-			String filePath = request.getServletContext().getRealPath("/flare.json");
-			PrintWriter out = new PrintWriter(new FileWriter(new File(filePath)));
-			out.write(obj.toString());
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("写入完毕");
-		double time = (double) (System.currentTimeMillis() - start) / 1000;
-		System.out.println("总共" + newsList.size() + "篇文章");
-		System.out.println("总耗时" + time + "秒");
-		response.sendRedirect("demo1_1.jsp");
+//		/* 根据新闻内容对新闻列表进行分类 */
+//		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);
+//		
+//		/* 把子列表先转化为树，再把树列表转化为JsonObject */
+//		JSONObject obj = new JSONObject();
+//		JSONArray array = new JSONArray();
+//		obj.put("name", keyword);
+//		int i = 0;
+//		for (Iterator<List<NewsInfo>> iterator = newsGroup.iterator(); iterator.hasNext();) {
+//			List<NewsInfo> news = (List<NewsInfo>) iterator.next();
+//			if (news.size() > 1) {
+//				array.add(new ListToTree().listToTree(news));
+//				System.out.println("构建第" + (++i) + "棵树");
+//			}
+//		}
+//		obj.put("children", array);
+//
+//		/* 把这个jsonobject写入到flare.json文件中，方便d3.js插件通过使用这个文件内容进行可视化 */
+//		System.out.println("写入到json文件中...");
+//		try {
+//			String filePath = request.getServletContext().getRealPath("/flare.json");
+//			PrintWriter out = new PrintWriter(new FileWriter(new File(filePath)));
+//			out.write(obj.toString());
+//			out.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("写入完毕");
+//		double time = (double) (System.currentTimeMillis() - start) / 1000;
+//		System.out.println("总共" + newsList.size() + "篇文章");
+//		System.out.println("总耗时" + time + "秒");
+//		response.sendRedirect("demo1_1.jsp");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

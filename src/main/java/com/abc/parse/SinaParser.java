@@ -28,6 +28,7 @@ public class SinaParser extends SpecialNewsParser{
 	private static final String sourceRegex = "<meta name=\"mediaid\" content=\"(.*?)\"";
 	private static final String sourceRegex2 = "<span.*?id=\"media_name\".*?>(.*?)</span>"; // 地方，比如新浪四川
 	private static final String sourceRegex3 = "<span id=\"art_source\">(.*?)</span>";
+	private static final String sourceRegex4 = "(?:来源|来源于|稿源|摘自)[：:\\s]\\s*?(?:<.*?>)+([^<>\\s]+)<";
 	
 	protected static String site="新浪网";
 	
@@ -39,6 +40,7 @@ public class SinaParser extends SpecialNewsParser{
 	private static Pattern pPubtime2;
 	private static Pattern pSource2;
 	private static Pattern pSource3;
+	private static Pattern pSource4;
 	
 	private static HashMap<String, String> channelMap = new HashMap<String, String>();
 	
@@ -51,6 +53,7 @@ public class SinaParser extends SpecialNewsParser{
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
 		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 		pSource3 = Pattern.compile(sourceRegex3, Pattern.CASE_INSENSITIVE);
+		pSource4 = Pattern.compile(sourceRegex4, Pattern.CASE_INSENSITIVE);
 		
 		channelMap.put("gn", "国内");
 		channelMap.put("gj", "国际");
@@ -112,14 +115,25 @@ public class SinaParser extends SpecialNewsParser{
 		Matcher matcher = sourcePattern.matcher(content);
 		if (matcher.find()) { 
 			source = matcher.group(1);
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) {
 				source = matcher.group(1);
+				originalSourceText = matcher.group(0).trim();
 			} else {
 				matcher = pSource3.matcher(content);
 				if (matcher.find()) {
 					source = matcher.group(1);
+					originalSourceText = matcher.group(0).trim();
+				}else{
+					matcher = pSource4.matcher(content);
+					if (matcher.find()) {
+						source = matcher.group(1);
+						originalSourceText = matcher.group(0).trim();
+					}else{
+						originalSourceText = "";
+					}
 				}
 			}
 		}

@@ -43,14 +43,20 @@ public class CeParser extends SpecialNewsParser {
 	protected String extractSource(String content,  Pattern sourcePattern) {
 		Matcher matcher = sourcePattern.matcher(content);
 		String source = "";
+		
 		if (matcher.find()) {
 			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
 		} else {
 			matcher = pSource2.matcher(content);
 			if (matcher.find()) {
 				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
+			}else{
+				originalSourceText = "";
 			}
 		}
+		
 		return source;
 	}
 

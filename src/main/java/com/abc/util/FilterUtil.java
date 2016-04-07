@@ -42,9 +42,9 @@ public class FilterUtil {
 		if (matcher.find())
 			source = matcher.group(2).trim(); // 过滤网页标签
 		source = source.replaceAll("[\\\\,;>： :<\"“”]", ""); // 过滤非法字符
-		if (source == null || "".equals(source)) {
-			source = ParseUtil.parseNewsSource(info.getRawContent());
-		}
+//		if (source == null || "".equals(source)) {
+//			source = ParseUtil.parseNewsSource(info.getRawContent());
+//		}
 		source = source.replaceAll("[\\\\,;>： :<\"“”]", "");
 		if (source.length() > 12) { // 过滤过长的来源
 			info.setSource("");
@@ -52,7 +52,7 @@ public class FilterUtil {
 			info.setSource(source);
 		}
 		if ("".equals(info.getSource())) {
-			Util.writeToHtmlFile(info.getUrl());
+			//Util.writeToHtmlFile(info.getUrl());
 			return null;
 		}
 
@@ -97,7 +97,6 @@ public class FilterUtil {
 		String webword = info.getKeywords();
 		if (webword.length() > 100)
 			info.setKeywords(webword);
-
 		return info;
 	}
 

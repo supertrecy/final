@@ -20,12 +20,14 @@ public class SohuParser extends SpecialNewsParser{
 	private static final String titleRegex2 = "<h1 itemprop=\"headline\">(.*?)</h1>";
 	private static final String pubtimeRegex = "<div\\sclass=\"time\".*?>(.*?)<";
 	private static final String keywordsRegex = "<meta name=\"keywords\" content=\"(.*?)\"";
-	private static final String sourceRegex = "来源：<span id=\"media_span\".*?>(?:<.*?>)?(.*?)<";
+	private static final String sourceRegex = "<span class=\"writer\".*?>(?:<.*?>)?(.*?)<";
+	private static final String sourceRegex2 = "<span id=\"media_span\".*?>(?:<.*?>)?(.*?)<";
 	
 	private static Pattern pTitle;
 	private static Pattern pPubtime;
 	private static Pattern pKeywords;
 	private static Pattern pSource;
+	private static Pattern pSource2;
 	private static Pattern pTitle2;
 	
 	protected static String site="搜狐网";
@@ -36,6 +38,7 @@ public class SohuParser extends SpecialNewsParser{
 		pPubtime = Pattern.compile(pubtimeRegex, Pattern.CASE_INSENSITIVE);
 		pKeywords = Pattern.compile(keywordsRegex, Pattern.CASE_INSENSITIVE);		
 		pSource = Pattern.compile(sourceRegex, Pattern.CASE_INSENSITIVE);
+		pSource2 = Pattern.compile(sourceRegex2, Pattern.CASE_INSENSITIVE);
 	}
 
 	@Override
@@ -89,5 +92,26 @@ public class SohuParser extends SpecialNewsParser{
 		}	
 		return keywords;
 	}
+
+	@Override
+	protected String extractSource(String content, Pattern sourcePattern) {
+		Matcher matcher = pSource.matcher(content);
+		String source ="";
+		if (matcher.find()) {
+			source = matcher.group(1).trim();
+			originalSourceText = matcher.group(0).trim();
+
+		} else {
+			matcher = pSource2.matcher(content);
+			if (matcher.find()) {
+				source = matcher.group(1).trim();
+				originalSourceText = matcher.group(0).trim();
+			} else {
+				originalSourceText = "";
+			}
+		}
+		return source;
+	}
+	
 	
 }

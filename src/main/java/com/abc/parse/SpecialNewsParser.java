@@ -4,11 +4,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.abc.db.entity.NewsInfo;
+import com.abc.util.Util;
 
 public class SpecialNewsParser extends NewsParser {
 
 	protected static final String titleRegex = "<title>(.*?)</title>";
 	protected static final String keywordsRegex = "<meta name=\"?keywords\"? content=\"(.*?)\"";
+	protected String originalSourceText = "";
 
 	public NewsInfo getParse(String content, String encoding, String url) {
 		NewsInfo info = new NewsInfo();
@@ -16,11 +18,12 @@ public class SpecialNewsParser extends NewsParser {
 		String curTime = df.format(System.currentTimeMillis());
 		info.setFetchtime(curTime);
 		getBaseInfo(info, url, content);
-//		if (info.getSource() == null || "".equals(info.getSource())) {
-//			System.out.println("提取失败"+"："+info.getUrl());
-//		}else{
-//			System.out.println(info.getSite()+"："+info.getSource());
-//		}
+		info.setSourceUrl(extractSourceUrl(originalSourceText));
+		System.out.println(info.getSite() + ":" + info.getSource() + ":" + info.getSourceUrl());
+		System.out.println("--------------------------------------------------------");
+		if ("".equals(info.getSource())) {
+			Util.writeToHtmlFile(info.getUrl());
+		}
 		return info;
 	}
 
@@ -80,6 +83,9 @@ public class SpecialNewsParser extends NewsParser {
 		String source = "";
 		if (matcher.find()) {
 			source = matcher.group(1);
+			originalSourceText = matcher.group(0).trim();
+		} else {
+			originalSourceText = "";
 		}
 		return source;
 	}
