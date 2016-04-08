@@ -29,7 +29,7 @@ public class BaiduNewsPageProcessor extends AbstractCrawler {
 		String title = page.getHtml().$("title", "text").toString();
 		if (!title.contains("百度新闻搜索")) {
 //			System.out.println((++i)+"."+title);
-			this.parseNewsHtml(page.getRawText(), page.getUrl().toString());
+			this.parseNewsHtml(page);
 		}
 	}
 

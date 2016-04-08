@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.parse.HtmlParser;
 import com.abc.util.Util;
 
+import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
@@ -56,7 +58,9 @@ public abstract class AbstractCrawler implements PageProcessor {
 		return urlTimeMap;
 	}
 
-	void parseNewsHtml(String html, String url) {
+	void parseNewsHtml(Page page) {
+		String html = page.getRawText();
+		String url = page.getUrl().toString();
 		if(!NewsInfoDao.isExist(url)){
 //			System.out.println("开始处理："+url);
 			HtmlParser parser = new HtmlParser();
@@ -64,8 +68,29 @@ public abstract class AbstractCrawler implements PageProcessor {
 			if (news != null){
 //				System.out.println("成功解析："+news.getUrl());
 				news.setSearchWords(searchWordsStr);
-//				NewsInfoDao.addNews(news);
+				NewsInfoDao.addNews(news);
+				String sourceUrl = news.getSourceUrl();
+				if(!"".equals(sourceUrl)&&isNewsUrl(sourceUrl)){
+					page.addTargetRequest(sourceUrl);
+					System.out.println(sourceUrl);
+				}
 			}
+		}
+	}
+	
+	private boolean isNewsUrl(String url) {
+		if (!url.contains(".htm") && !url.contains(".shtml")) {
+			String temp = url.substring(url.indexOf("://") + 3);
+			if (temp.contains("/")) {
+				temp = temp.substring(temp.indexOf("/") + 1);
+				Pattern pattern = Pattern.compile(".*\\d+.*");
+				return pattern.matcher(temp).matches();
+
+			} else {
+				return false;
+			}
+		} else {
+			return true;
 		}
 	}
 }

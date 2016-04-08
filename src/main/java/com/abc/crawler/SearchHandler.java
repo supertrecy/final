@@ -40,14 +40,14 @@ public class SearchHandler {
 		/* 执行抓取 */
 		Spider.create(baidu).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
-//
-//		Spider.create(bing).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
-//				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
-//
-//		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
-//				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
+
+		Spider.create(bing).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
+
+		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
+				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 		
-		//BaiduNewsPageProcessor.clearSearchWords();
+		BaiduNewsPageProcessor.clearSearchWords();
 
 	}
 

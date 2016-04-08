@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.abc.db.entity.NewsInfo;
-import com.abc.util.Util;
 
 public class SpecialNewsParser extends NewsParser {
 
@@ -19,11 +18,13 @@ public class SpecialNewsParser extends NewsParser {
 		info.setFetchtime(curTime);
 		getBaseInfo(info, url, content);
 		info.setSourceUrl(extractSourceUrl(originalSourceText));
-		System.out.println(info.getSite() + ":" + info.getSource() + ":" + info.getSourceUrl());
-		System.out.println("--------------------------------------------------------");
-		if ("".equals(info.getSource())) {
-			Util.writeToHtmlFile(info.getUrl());
-		}
+
+//		if(originalSourceText.contains("weixin")){
+//			System.out.println(originalSourceText);
+//			System.out.println(info.getSourceUrl());
+//			System.out.println("----------------------------------------------------------");
+//			
+//		}
 		return info;
 	}
 

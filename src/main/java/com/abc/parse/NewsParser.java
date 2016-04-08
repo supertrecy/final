@@ -17,8 +17,12 @@ public class NewsParser {
 	
 	public String extractSourceUrl(String original){
 		String urlRegex = "http[s]?://([\\w|\\-|\\.|//]+)+([\\w-./?%&=]*)";
+		String urlRegex2 = "http[s]?://([\\w|\\-|\\.|//]+)+([\\w-./?%#&;=]*)";
 		Pattern p = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+		Pattern p2 = Pattern.compile(urlRegex2, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = p.matcher(original);
+		if(original.contains("weixin"))
+			matcher = p2.matcher(original);
 		if (matcher.find()) {
 			return matcher.group(0).trim();
 		}else

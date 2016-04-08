@@ -21,8 +21,8 @@ public class BingNewsPageProcessor extends AbstractCrawler {
 		/* 如果是新闻页面 */
 		String url = page.getUrl().toString();
 		if (!url.contains("cn.bing.com/news")) {
-			System.out.println((++i)+"."+url);
-			this.parseNewsHtml(page.getRawText(), url);
+//			System.out.println((++i)+"."+url);
+			this.parseNewsHtml(page);
 		}
 	}
 

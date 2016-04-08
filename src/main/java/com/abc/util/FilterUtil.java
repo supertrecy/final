@@ -42,18 +42,14 @@ public class FilterUtil {
 		if (matcher.find())
 			source = matcher.group(2).trim(); // 过滤网页标签
 		source = source.replaceAll("[\\\\,;>： :<\"“”]", ""); // 过滤非法字符
-//		if (source == null || "".equals(source)) {
-//			source = ParseUtil.parseNewsSource(info.getRawContent());
-//		}
-		source = source.replaceAll("[\\\\,;>： :<\"“”]", "");
 		if (source.length() > 12) { // 过滤过长的来源
 			info.setSource("");
 		} else {
 			info.setSource(source);
 		}
 		if ("".equals(info.getSource())) {
-			//Util.writeToHtmlFile(info.getUrl());
-			return null;
+			Util.writeToHtmlFile(info.getUrl());
+			//return null;
 		}
 
 		/* 过滤发布时间，如果需要的话格式化 */

@@ -274,8 +274,14 @@ public class CommonParser extends NewsParser {
 			}
 		}
 		/*** 提取新闻来源url信息 ***/
-		info.setSourceUrl(this.extractSourceUrl(originalSourceText));;
+		info.setSourceUrl(this.extractSourceUrl(originalSourceText));
 		
+//		if(info.getSourceUrl().contains("weixin")){
+//			System.out.println(originalSourceText);
+//			System.out.println(info.getSourceUrl());
+//			System.out.println("----------------------------------------------------------");
+//			
+//		}
 
 		// 全角空格通过trim()去除不了，也无法通过source.indexOf(" ")找到
 		if (source != null) {
