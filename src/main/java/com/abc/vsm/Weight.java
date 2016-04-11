@@ -45,9 +45,14 @@ public class Weight {
 
 	public List<Double> computingTFIDFWeight(String docment, List<NewsInfo> newsList) {
 		List<Double> vector = initVector();
+		long start = System.currentTimeMillis();
 		List<String> words = WordSegUtil.participle(docment);
+		System.out.println("*一次分词耗时" + (double) (System.currentTimeMillis() - start) / 1000 + "秒");
+
 		vector = getTermFrequencies(words, vector);
+
 		int length_of_words = words.size();
+		start = System.currentTimeMillis();
 		for (String word : words) {
 			Integer index = allwords.get(word);
 			if (index != null) {
@@ -55,6 +60,7 @@ public class Weight {
 				vector.set(index, vector.get(index.intValue()) * idf / length_of_words);
 			}
 		}
+		System.out.println("*获取TF-IDF向量耗时" + (double) (System.currentTimeMillis() - start) / 1000 + "秒");
 		return vector;
 	}
 

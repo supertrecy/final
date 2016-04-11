@@ -62,5 +62,7 @@ public class SimilarityMatrix  implements AttachTag{
 	public List<String> getNewsTagList(NewsInfo news) {
 		return new LinkedList<>(newsVectorMap.get(news).keySet());
 	}
+	
+	
 
 }
