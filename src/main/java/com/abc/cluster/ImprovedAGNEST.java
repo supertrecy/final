@@ -11,17 +11,16 @@ import com.abc.db.entity.NewsInfo;
  * 
  * @author w_w
  */
-public class ImprovedAGNEST extends AGNEST{
-	
-	public ImprovedAGNEST(List<NewsInfo> newsList,boolean needTag){
-		super(newsList,needTag);
+public class ImprovedAGNEST extends AGNEST {
+
+	public ImprovedAGNEST(List<NewsInfo> newsList, boolean needTag) {
+		super(newsList, needTag);
 	}
-	
-	public ImprovedAGNEST(List<NewsInfo> newsList, int clusterNum,boolean needTag) {
+
+	public ImprovedAGNEST(List<NewsInfo> newsList, int clusterNum, boolean needTag) {
 		super(newsList, clusterNum, needTag);
 	}
 
-	
 	@Override
 	public List<Cluster> clustering() {
 		List<Cluster> result = initClusters();
@@ -29,7 +28,7 @@ public class ImprovedAGNEST extends AGNEST{
 		while (result.size() > clusterNum) {
 			Cluster cluster = result.get(index);
 			result = mergeCluster(cluster, result);
-			if((++index) >= result.size()){
+			if ((++index) >= result.size()) {
 				index = 0;
 			}
 		}
@@ -42,22 +41,22 @@ public class ImprovedAGNEST extends AGNEST{
 		Set<NewsInfo> newsSet = newsMap.keySet();
 		for (NewsInfo newsInfo : newsSet) {
 			boolean findCluster = false;
-			if(result.size() > 0){
+			if (result.size() > 0) {
 				for (Cluster cluster : result) {
 					double sim = smatrix.get(newsMap.get(cluster.getFirst()), newsMap.get(newsInfo));
-					if(sim == 1){
+					if (sim == 1) {
 						cluster.addPoint(newsInfo);
 						findCluster = true;
 						break;
 					}
 				}
 			}
-			if(!findCluster){
+			if (!findCluster) {
 				List<NewsInfo> list = new LinkedList<>();
 				list.add(newsInfo);
 				result.add(new Cluster(list));
 			}
-			
+
 		}
 		return result;
 	}

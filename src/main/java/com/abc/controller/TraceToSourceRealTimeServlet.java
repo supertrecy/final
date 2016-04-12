@@ -1,10 +1,6 @@
 package com.abc.controller;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,10 +13,6 @@ import com.abc.crawler.SearchHandler;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.util.Util;
-import com.abc.vsm.Vsm;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * @author yh Servlet implementation class TraceToSourceRealTimeServlet

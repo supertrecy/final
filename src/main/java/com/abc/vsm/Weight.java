@@ -14,13 +14,23 @@ import com.abc.util.WordSegUtil;
 public class Weight {
 
 	private static Map<String, Integer> allwords;
+	private static Map<String, Integer> allwordsDF;
 	private static int lengthOfVector;
+	private static int docNums;
 	private Map<String, Double> wordWeightMap;
 	private DecimalFormat df = new DecimalFormat("#0.000");
 	private final int TAGS_NUM = 15;
 
 	public Weight(Map<String, Integer> allwords) {
 		Weight.allwords = allwords;
+		lengthOfVector = Weight.allwords.size();
+		wordWeightMap = new HashMap<>();
+	}
+
+	public Weight(int docNums, Map<String, Integer> allwords, Map<String, Integer> allwordsDF) {
+		Weight.allwords = allwords;
+		Weight.allwordsDF = allwordsDF;
+		Weight.docNums = docNums;
 		lengthOfVector = Weight.allwords.size();
 		wordWeightMap = new HashMap<>();
 	}
@@ -64,6 +74,23 @@ public class Weight {
 		return vector;
 	}
 
+	public List<Double> computingTFIDFWeight(String docment) {
+		List<Double> vector = initVector();
+		List<String> words = WordSegUtil.participle(docment);
+
+		vector = getTermFrequencies(words, vector);
+
+		int length_of_words = words.size();
+		for (String word : words) {
+			Integer index = allwords.get(word);
+			if (index != null) {
+				double idf = getIDF(word);
+				vector.set(index, vector.get(index.intValue()) * idf / length_of_words);
+			}
+		}
+		return vector;
+	}
+
 	public List<Double> computingTFIDFWeight2(String docment, List<NewsInfo> newsList) {
 		List<Double> vector = initVector();
 		List<String> words = WordSegUtil.participle(docment);
@@ -96,6 +123,12 @@ public class Weight {
 				docNumsContainWord++;
 		}
 		idf = Math.log10(docNumsContainWord > 0 ? (docNums / docNumsContainWord) : docNums);
+		return idf;
+	}
+
+	private double getIDF(String word) {
+		double docNumsContainWord = allwordsDF.get(word);
+		double idf = Math.log10(docNumsContainWord > 0 ? (docNums / docNumsContainWord) : docNums);
 		return idf;
 	}
 

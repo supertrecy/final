@@ -157,14 +157,12 @@ public class ListToTree {
 			}else{
 				// insert node to queue's tree
 				insertNode(source, site, queue);
-				System.out.println((++i)+"."+news.getContent());
-				System.out.println("------------------------------------------------------");
 			}
 		}
 		//change tree to json format
-		JSONObject obj = new JSONObject();
+		JSONObject obj = new JSONObject();                                                                       
 		JSONArray array = new JSONArray();
-		obj.put("name", title);
+		obj.put("name", "");
 		for (TreeNode<String> treeNode : queue) {
 			array.add(treeNode.wholeTreeToJSON());
 		}

@@ -65,4 +65,5 @@ public class Util {
 		String query = sb.substring(0, sb.length() - 1);
 		return query;
 	}
+	
 }

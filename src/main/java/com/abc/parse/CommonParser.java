@@ -118,6 +118,7 @@ public class CommonParser extends NewsParser {
 		siteMap.put("gushi360.com", "股市360股票网");
 		siteMap.put("gywb.cn", "贵阳网");
 		siteMap.put("gyxww.cn", "广元新闻网");
+		siteMap.put("cankaoxiaoxi.com", "参考消息网");
 		siteMap.put("ijntv.cn", "济南网络广播电视台");
 		siteMap.put("nmgnews.com.cn", "内蒙古新闻网");
 		siteMap.put("beelink.com", "百灵网");

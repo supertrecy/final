@@ -30,19 +30,19 @@ public class SimilarityRealTimeMatrix {
 
 		/* 获取每条新闻的向量表示 */
 		start = System.currentTimeMillis();
-		DocumentDimension dd = new DocumentDimension();
+		DocumentDimension dd = new DocumentDimension(newsList);
 		System.out.println("***获取维度耗时" + (double) (System.currentTimeMillis() - start) / 1000 + "秒");
 
-		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
+		Weight wc = new Weight(dimension, dd.getAllWordsOfDocument(), dd.getAllWordsDF());
 		vectorlist = new ArrayList<>(dimension);
 		for (NewsInfo newsInfo : newsList) {
 			start = System.currentTimeMillis();
-			vectorlist.add(wc.computingTFIDFWeight(newsInfo.getContent(), newsList));
-			System.out.println("**一次向量化耗时" + (double) (System.currentTimeMillis() - start) / 1000 + "秒");
-
+			vectorlist.add(wc.computingTFIDFWeight(newsInfo.getContent()));
 		}
+		System.out.println("***向量化耗时" + (double) (System.currentTimeMillis() - start) / 1000 + "秒");
 
 	}
+	
 
 	public double get(NewsInfo news1, NewsInfo news2) {
 		int i = newsList.indexOf(news1);
