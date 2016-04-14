@@ -74,7 +74,7 @@ public class SourceTreeNode {
 			tip += "no source,";
 		if (element.getSourceUrl().equals(""))
 			tip += "no source url,";*/
-		root.put("name", element.getUrl());
+		root.put("name", element.getSite()+":"+element.getId());
 		if (getChildrenNum() != 0) {
 			JSONArray jsonChildren = new JSONArray();
 			for (SourceTreeNode child : children) {

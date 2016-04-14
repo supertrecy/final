@@ -35,6 +35,7 @@ public class TraceToSourceServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		long beginning = System.currentTimeMillis();
 		long start = System.currentTimeMillis();
 		List<NewsInfo> newsList = null;
 		String keyword = request.getParameter("keyword");
@@ -142,7 +143,7 @@ public class TraceToSourceServlet extends HttpServlet {
 		List<Cluster> result = new ImprovedAGNEST3(scontext.matrix(), 0.9).clustering(rest);
 		for (Cluster cluster : result) {
 			if (cluster.getPoints().size() > 1)
-				array.add(new ListToTree().listToTree(cluster.getPoints()));
+				array.add(ListToTree.clusterToTree(cluster));
 		}
 		obj.put("children", array);
 
@@ -157,7 +158,7 @@ public class TraceToSourceServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		System.out.println("写入完毕");
-		double time = (double) (System.currentTimeMillis() - start) / 1000;
+		double time = (double) (System.currentTimeMillis() - beginning) / 1000;
 		System.out.println("总共" + newsList.size() + "篇文章");
 		System.out.println("总耗时" + time + "秒");
 		response.sendRedirect("demo1_2.jsp");

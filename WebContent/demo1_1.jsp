@@ -26,7 +26,7 @@
 <body>
 	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script>
-		var width = 960, height = 2000;
+		var width = 1800, height = 4000;
 
 		var tree = d3.layout.tree().size([ height, width - 160 ]);
 
