@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.abc.crawler.SearchHandler;
+import com.abc.crawler.extract.MutiplePageNewsCachePool;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.util.Util;
@@ -30,9 +31,14 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		/* 用爬虫抓取本次关键词相关的新闻，并存入数据库 */
 		List<String> search_words = Util.normalizeKeyword(keyword);
 		new SearchHandler().startNewsSearch(search_words);
+		
+		System.out.println("*********************************cache整理*********************************");
+		
+		MutiplePageNewsCachePool cache = MutiplePageNewsCachePool.getInstance();
+		cache.getCachedNews();
 
 		/* 从数据库中获取本次关键词相关的新闻列表 */
-		newsList = NewsInfoDao.getNewsListBySearchWords(Util.glueSearchWords(search_words));
+//		newsList = NewsInfoDao.getNewsListBySearchWords(Util.glueSearchWords(search_words));
 
 //		/* 根据新闻内容对新闻列表进行分类 */
 //		List<List<NewsInfo>> newsGroup = Vsm.compareMutiple(newsList);

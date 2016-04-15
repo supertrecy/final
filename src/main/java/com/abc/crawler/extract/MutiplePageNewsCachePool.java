@@ -1,6 +1,7 @@
 package com.abc.crawler.extract;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class MutiplePageNewsCachePool {
 	private static MutiplePageNewsCachePool instance = null;
 
 	private MutiplePageNewsCachePool() {
+		cachePool = new HashMap<>();
 	}
 
 	public static MutiplePageNewsCachePool getInstance() {
@@ -32,6 +34,7 @@ public class MutiplePageNewsCachePool {
 			list = new LinkedList<>();
 			list.add(news);
 		}
+		cachePool.put(key, list);
 	}
 	
 	public boolean isExist(String key){
@@ -42,7 +45,7 @@ public class MutiplePageNewsCachePool {
 			
 	}
 
-	public static List<NewsInfo> getCachedNews() {
+	public  List<NewsInfo> getCachedNews() {
 		Set<String> keyset = cachePool.keySet();
 		List<NewsInfo> newsList = new LinkedList<>();
 		NewsInfo news = null;
@@ -50,11 +53,13 @@ public class MutiplePageNewsCachePool {
 			List<NewsInfo> list = cachePool.get(key);
 			StringBuilder sb = new StringBuilder();
 			for (NewsInfo newsInfo : list) {
+				System.out.println(newsInfo.getUrl());
 				sb.append(newsInfo.getContent());
-				if(news.getSite() != null||!"".equals(news.getSite()))
+				if(news.getUrl()!= null||!"".equals(news.getUrl()))
 					news = newsInfo;
 			}
 			news.setContent(sb.toString());
+			System.out.println(news.getContent());
 			newsList.add(news);
 			
 		}

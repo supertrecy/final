@@ -14,7 +14,7 @@ public class SearchHandler {
 
 	public static final Logger LOG = LoggerFactory.getLogger(SearchHandler.class);
 	private SearchUrlExtractor se = new SearchUrlExtractor();
-	private static final int THREAD_NUM = 5;
+	private static final int THREAD_NUM = 1;
 
 	public SearchHandler() {
 	}
