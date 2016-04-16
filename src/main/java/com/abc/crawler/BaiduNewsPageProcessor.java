@@ -24,11 +24,11 @@ public class BaiduNewsPageProcessor extends AbstractCrawler {
 		addLinkAndTime(links, pubtimes);
 		morelinks.addAll(links);
 		page.addTargetRequests(morelinks);
-		
+
 		/* 如果是新闻页面 */
 		String title = page.getHtml().$("title", "text").toString();
 		if (!title.contains("百度新闻搜索")) {
-//			System.out.println((++i)+"."+title);
+			System.out.println((++i)+"."+title);
 			this.parseNewsHtml(page);
 		}
 	}

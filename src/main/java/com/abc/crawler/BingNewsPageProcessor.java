@@ -17,11 +17,13 @@ public class BingNewsPageProcessor extends AbstractCrawler {
 		List<String> pubtimes = this.extractPubtime(pubtimeTexts);
 		addLinkAndTime(links, pubtimes);
 		page.addTargetRequests(links);
-		
+//		for (String string : links) {
+//			System.out.println(string);
+//		}
 		/* 如果是新闻页面 */
 		String url = page.getUrl().toString();
 		if (!url.contains("cn.bing.com/news")) {
-//			System.out.println((++i)+"."+url);
+			System.out.println((++i)+"."+url);
 			this.parseNewsHtml(page);
 		}
 	}

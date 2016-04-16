@@ -21,7 +21,7 @@ public class SogouNewsPageProcessor extends AbstractCrawler {
 		/* 如果是新闻页面 */
 		String title = page.getHtml().$("title", "text").toString();
 		if (!title.contains("搜狗新闻搜索")) {
-//			System.out.println((++i) + "." + title);
+			System.out.println((++i) + "." + title);
 			this.parseNewsHtml(page);
 		}
 	}

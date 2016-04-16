@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.abc.crawler.SearchHandler;
 import com.abc.crawler.extract.MutiplePageNewsCachePool;
-import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.util.Util;
 
@@ -33,9 +32,9 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		new SearchHandler().startNewsSearch(search_words);
 		
 		System.out.println("*********************************cache整理*********************************");
-		
 		MutiplePageNewsCachePool cache = MutiplePageNewsCachePool.getInstance();
-		cache.getCachedNews();
+		cache.store();
+		cache.clear();
 
 		/* 从数据库中获取本次关键词相关的新闻列表 */
 //		newsList = NewsInfoDao.getNewsListBySearchWords(Util.glueSearchWords(search_words));

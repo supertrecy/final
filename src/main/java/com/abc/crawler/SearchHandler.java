@@ -14,7 +14,7 @@ public class SearchHandler {
 
 	public static final Logger LOG = LoggerFactory.getLogger(SearchHandler.class);
 	private SearchUrlExtractor se = new SearchUrlExtractor();
-	private static final int THREAD_NUM = 1;
+	private static final int THREAD_NUM = 10;
 
 	public SearchHandler() {
 	}
@@ -38,12 +38,15 @@ public class SearchHandler {
 		BaiduNewsPageProcessor.setSearchWords(search_words);
 
 		/* 执行抓取 */
+		System.out.println("****************************************baidu搜索**************************************");
 		Spider.create(baidu).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BAIDU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 
+		System.out.println("****************************************bing搜索**************************************");
 		Spider.create(bing).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.BING))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 
+		System.out.println("****************************************sogou搜索**************************************");
 		Spider.create(sogou).addUrl(se.getSearchUrl(search_words, SearchUrlExtractor.SOGOU))
 				.addPipeline(new JsonFilePipeline("D:\\webmagic\\")).thread(THREAD_NUM).run();
 		

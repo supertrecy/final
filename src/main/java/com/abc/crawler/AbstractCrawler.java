@@ -1,7 +1,9 @@
 package com.abc.crawler;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -33,16 +35,6 @@ public abstract class AbstractCrawler implements PageProcessor {
 		cache = MutiplePageNewsCachePool.getInstance();
 	}
 
-	void addLinkAndTime(List<String> urls, List<String> pubtimes) {
-		Iterator<String> it1 = urls.iterator();
-		Iterator<String> it2 = pubtimes.iterator();
-		for (; it1.hasNext() && it2.hasNext();) {
-			String url = (String) it1.next();
-			String pubtime = (String) it2.next();
-			urlTimeMap.put(url, pubtime);
-		}
-	}
-
 	@Override
 	public Site getSite() {
 		return site;
@@ -62,41 +54,88 @@ public abstract class AbstractCrawler implements PageProcessor {
 		return urlTimeMap;
 	}
 
+	void addLinkAndTime(List<String> urls, List<String> pubtimes) {
+		Iterator<String> it1 = urls.iterator();
+		Iterator<String> it2 = pubtimes.iterator();
+		for (; it1.hasNext() && it2.hasNext();) {
+			String url = (String) it1.next().toLowerCase();
+			String pubtime = (String) it2.next();
+			urlTimeMap.put(url, pubtime);
+		}
+	}
+
 	void parseNewsHtml(Page page) {
 		String html = page.getRawText();
-		String url = page.getUrl().toString();
+		String url = page.getUrl().toString().toLowerCase();//避免因为大小写导致重复的url
+		boolean isCached = false;
+
 		/* 如果数据库中不存在该新闻 */
 		String key = getNewsUrlKey(url);
 		if (!NewsInfoDao.isExist(url) && key != null) {
-			System.out.println("开始处理："+url);
+			System.out.println("开始处理：" + url);
+			NewsInfo news = null;
+
+			/* 如果cache中包含key，也就是该新闻有分页 */
 			if (!cache.isExist(key)) {
-				NewsInfo news = new HtmlParser().getParse(searchWords, html, url, urlTimeMap.get(url));
+				news = new HtmlParser().getParse(searchWords, html, url, urlTimeMap.get(url));
 				if (news != null) {
-					 System.out.println("成功解析："+news.getUrl());
+					System.out.println("成功解析：" + news.getUrl());
 					news.setSearchWords(searchWordsStr);
-					//NewsInfoDao.addNews(news);
+
+					/* 如果新闻还有转发源，并且该源是新闻页面 */
 					String sourceUrl = news.getSourceUrl();
-					if (!"".equals(sourceUrl)) {
+					if (!"".equals(sourceUrl) && isNewsUrl(sourceUrl)) {
 						page.addTargetRequest(sourceUrl);
 					}
-					List<String> links = page.getHtml().css("body").links().regex(key + "[-|_].*").all();// 
-					System.out.println("匹配到分页");
-					for (String string : links) {
-						System.out.println(string);
-					}
-					System.out.println("------------------------------------------------");
-					//page.addTargetRequests(links);
-					cache.add(key, news);
 				}
-			} else {
-				System.out.println("已经存在");
-				
-				NewsInfo news = new NewsInfo();
-				news.setUrl(url);
-				news.setContent(new ContentParser().parseContent(html, url));
-				cache.add(key, news);
 			}
+			/* 如果cache中包含key，也就是该新闻有分页 */
+			else {
+				isCached = true;
+				/* 如果该新闻分页没有被放入cache中 ,虽然会设定不提取重复的url，但不同的搜索引擎可能都有该url，所以必须有这个判断*/
+				if (!cache.isUrlExist(url)) {
+					news = new NewsInfo();
+					news.setUrl(url);
+					news.setContent(new ContentParser().parseContent(html, url));
+				}else{
+					return;
+				}
+			}
+			extractPaginationUrl(isCached, news, page, key, url);
+
 		}
+	}
+
+	private void extractPaginationUrl(boolean isCached, NewsInfo news, Page page, String key, String url) {
+		List<String> links = page.getHtml().css("body").links().regex(key + "[-|_].*").all();
+		links = new LinkedList<>(new HashSet<>(links));// url去重
+		List<String> pageUrls = new LinkedList<>(links);
+		for (String link : links) {
+			// 去除本身、不合法的和全文页面
+			if (link.contains(url) || link.contains("#") || link.contains("all.")){
+				pageUrls.remove(link);
+				continue;
+			}
+			// 去除已经爬取的
+			if (cache.isUrlExist(link))
+				pageUrls.remove(link);
+		}
+
+		// 如果采集到其余分页
+		if (pageUrls.size() > 0) {
+			System.out.println("匹配到其余分页:");
+			for (String link : pageUrls) {
+				System.out.println(link);
+			}
+			System.out.println("------------------------------------------------");
+			page.addTargetRequests(pageUrls);
+		}
+		// 如果没有采集到其余分页，并且它不存在在分页新闻缓冲池内，也就是指它没有分页
+		else if (pageUrls.size() == 0 && !isCached) {
+			NewsInfoDao.addNews(news);
+			return;
+		}
+		cache.add(key, news);
 	}
 
 	private boolean isNewsUrl(String url) {
@@ -120,7 +159,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 	 * @param url
 	 *            新闻的url
 	 * @return
-	 *         <p>
+	 * 		<p>
 	 *         如果是某条新闻的url，返回新闻第一页的截取部分，
 	 *         </p>
 	 *         <p>
@@ -133,8 +172,6 @@ public abstract class AbstractCrawler implements PageProcessor {
 	 *         </p>
 	 */
 	private String getNewsUrlKey(String url) {
-		System.out.println("==================================================");
-		//System.out.println(url);
 		if (isNewsUrl(url)) {
 			String suffix = url.substring(url.lastIndexOf("/") + 1);
 			String prefix = url.substring(0, url.lastIndexOf("/") + 1);
@@ -164,16 +201,13 @@ public abstract class AbstractCrawler implements PageProcessor {
 				page = page.substring(0, page_dot_index);
 				suffix = suffix.substring(0, dot_index);
 			}
-			if (page.length() <= 2){
+			if (page.length() <= 2) {
 				suffix = suffix.substring(0, separator);
-				System.out.println(url);
-				System.out.println(prefix + suffix);
 			}
 			key = prefix + suffix;
-			
+
 			return key;
 		} else {
-			System.out.println("不是新闻");
 			return null;
 		}
 
