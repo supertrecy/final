@@ -10,11 +10,13 @@ import java.util.Set;
 
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
+import com.abc.util.Util;
 
 public class MutiplePageNewsCachePool {
 	private static Map<String, List<NewsInfo>> cachePool = null;
 	private static Set<String> crawledUrlsSet = null;
 	private static MutiplePageNewsCachePool instance = null;
+	private static String searchWordsStr;
 
 	private MutiplePageNewsCachePool() {
 		cachePool = new HashMap<>();
@@ -26,6 +28,11 @@ public class MutiplePageNewsCachePool {
 			instance = new MutiplePageNewsCachePool();
 		}
 		return instance;
+	}
+	
+
+	public static void setSearchWordsStr(List<String> searchWords) {
+		searchWordsStr = Util.glueSearchWords(searchWords);
 	}
 
 	public void add(String key, NewsInfo news) {
@@ -70,6 +77,7 @@ public class MutiplePageNewsCachePool {
 			}
 			news.setContent(sb.toString());
 			news.setUrl(url);
+			news.setSearchWords(searchWordsStr);
 			System.out.println("-------------------------------------------------------------------------");
 			newsList.add(news);
 			NewsInfoDao.addNews(news);

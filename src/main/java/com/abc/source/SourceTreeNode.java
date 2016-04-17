@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.abc.cluster.SimilarityContext;
 import com.abc.db.entity.NewsInfo;
+import com.abc.util.Util;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -69,12 +70,7 @@ public class SourceTreeNode {
 	public JSONObject wholeTreeToJSON() {
 
 		JSONObject root = new JSONObject();
-		/*String tip = "";
-		if (element.getSource().equals(""))
-			tip += "no source,";
-		if (element.getSourceUrl().equals(""))
-			tip += "no source url,";*/
-		root.put("name", element.getSite()+":"+element.getId());
+		root = Util.wrapJsonObject(root, element);
 		if (getChildrenNum() != 0) {
 			JSONArray jsonChildren = new JSONArray();
 			for (SourceTreeNode child : children) {

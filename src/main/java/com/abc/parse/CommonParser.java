@@ -236,6 +236,8 @@ public class CommonParser extends NewsParser {
 				if (site.length() > 15) {
 					site = "";
 				}
+				if(!site.contains("网"))
+					site = "";
 			}
 			if ("".equals(site)) {
 				site = domain;

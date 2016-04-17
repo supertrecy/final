@@ -4,7 +4,7 @@
 <html>
 <head>
 <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
-<title>demo1.1 树形</title>
+<title>svg</title>
 <style>
 	.node circle {
 		fill: #fff;
@@ -60,6 +60,10 @@
 				return d.children ? "end" : "start";
 			}).text(function(d) {
 				return d.name;
+			}).data(function(d){
+				return d.url;
+			}).on("click",function(d){
+           		 d3.select(this).text(d.url);
 			});
 		});
 

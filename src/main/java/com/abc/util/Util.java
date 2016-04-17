@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.abc.db.entity.NewsInfo;
+
+import net.sf.json.JSONObject;
+
 public class Util {
 	/**
 	 * 把url写入到一个html文件中，方便点击检查
@@ -64,6 +68,56 @@ public class Util {
 		}
 		String query = sb.substring(0, sb.length() - 1);
 		return query;
+	}
+	
+	/**
+	 * 认定没有任何源的为原创，或者源是本网站官网为原创
+	 * @param news
+	 * @return
+	 */
+	public static boolean isOriginal(NewsInfo news) {
+		String sourceUrl = news.getSourceUrl();
+		String url = news.getUrl();
+		if (url.equals(sourceUrl))
+			return true;
+
+		String sourcesite = null;
+		// source url是新闻页面url，但source url不等于url
+		if (URLUtil.isNewsUrl(sourceUrl)) {
+			return false;
+		}
+		// source url是非新闻页面的url
+		else if (URLUtil.isOfficialWebsiteUrl(sourceUrl)) {
+			sourcesite = URLUtil.getDomainName(sourceUrl);
+			if (sourcesite != null&&sourcesite.equals(URLUtil.getDomainName(sourceUrl)))
+				return true;
+			else
+				return false;
+		}
+		// source url为空
+		else {
+			String source = news.getSource();
+			String site = news.getSite();
+			if("".equals(source))
+				return true;
+			//如果site和source都是中文或者域名
+			if(site.contains(source) || source.contains(site) || source.contains("本站")
+					|| source.contains("原创"))
+				return true;
+			//如果source是域名，site是中文
+			if(source.equals(URLUtil.getDomainName(url)))
+				return true;
+		}
+		return false;
+	}
+	
+	public static JSONObject wrapJsonObject(JSONObject jsonObj,NewsInfo news){
+		jsonObj.put("name", news.getSite()+":"+news.getId());
+		jsonObj.put("url", news.getUrl());
+		jsonObj.put("title", news.getTitle());
+		jsonObj.put("source", news.getSource());
+		jsonObj.put("sourceUlr", news.getSourceUrl());
+		return jsonObj;
 	}
 	
 }

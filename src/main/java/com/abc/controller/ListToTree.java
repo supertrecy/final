@@ -15,7 +15,9 @@ import com.abc.cluster.SimilarityContext;
 import com.abc.db.TreeNode;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
+import com.abc.source.SourceTreeNode;
 import com.abc.source.SourceTreeNode2;
+import com.abc.util.Util;
 import com.abc.vsm.Vsm;
 
 import net.sf.json.JSONArray;
@@ -222,45 +224,33 @@ public class ListToTree {
 			String source = newsInfo.getSource();
 			SourceTreeNode2 node = new SourceTreeNode2(newsInfo);
 			// 如果新闻没有source，只能作为一棵树的根节点
-			if (source == null || "".equals(source)||"网络".equals(source)) {
+			if (source == null || "".equals(source) || "网络".equals(source)) {
 				queue.add(node);
 				continue;
 			}
 
-			String site = newsInfo.getSite();
-			boolean isOriginal = site.contains(source) || source.contains(site) || source.contains("本站")
-					|| source.contains("原创");
 			boolean isHandled = false;
 			for (SourceTreeNode2 tree : queue) {
-				// 如果文章为原创
-				if (isOriginal) {
-					// 如果是某棵树的根节点
-					if (SimilarityContext.nearlySameNode(node, tree)) {
-						node.getElement().setSource(newsInfo.getSite());
-						node.addChild(tree);
-						queue.remove(tree);
-						queue.add(node);
-						isHandled = true;
-						break;
-					}
+				// 如果文章为某棵树的根节点
+				if (SimilarityContext.sourceMatchAndInsert(node, tree)) {
+					isHandled = true;
+					break;
 				}
-				// 如果文章不是原创
-				else {
-					// 如果该节点能插入到某棵树
-					if (tree.insert(node)) {
-						isHandled = true;
-						break;
-					}
+				// 如果文章能插入到某棵树
+				else if (tree.insert(node)) {
+					isHandled = true;
+					break;
 				}
 			}
 
 			// 如果没能放入已存在的树中，就新建一棵
+			boolean isOriginal = Util.isOriginal(newsInfo);
 			if (!isHandled) {
-				if(isOriginal){
-					node.getElement().setSource(newsInfo.getSite());
+				if (isOriginal) {
+//					node.getElement().setSource(newsInfo.getSite());
 					queue.add(node);
 					continue;
-				}else{
+				} else {
 					SourceTreeNode2 root = new SourceTreeNode2(source);
 					root.addChild(node);
 					queue.add(root);
@@ -268,6 +258,31 @@ public class ListToTree {
 			}
 
 		}
+		
+		
+		/* 把可以连接的树连接起来 */
+		List<Boolean> validFlags = new LinkedList<>();
+		int size = queue.size();
+		for (int i = 0; i < size; i++)
+			validFlags.add(true);
+		List<SourceTreeNode2> newQueue = new LinkedList<>(queue);
+		for (int i = 0; i < size - 1 && validFlags.get(i); i++) {
+			for (int j = i + 1; j < size && validFlags.get(j); j++) {
+				SourceTreeNode2 nodeI = queue.get(i);
+				SourceTreeNode2 nodeJ = queue.get(j);
+				if (nodeI.insert(nodeJ)) {
+					validFlags.set(j, false);
+					newQueue.remove(nodeJ);
+					continue;
+				}
+				if (nodeJ.insert(nodeI)) {
+					validFlags.set(i, false);
+					newQueue.remove(nodeI);
+					break;
+				}
+			}
+		}
+		queue = newQueue;
 
 		// tree to json format
 		if (queue.size() > 1) {

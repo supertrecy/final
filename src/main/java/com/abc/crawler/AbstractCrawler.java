@@ -13,11 +13,13 @@ import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.parse.ContentParser;
 import com.abc.parse.HtmlParser;
+import com.abc.util.URLUtil;
 import com.abc.util.Util;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.utils.UrlUtils;
 
 public abstract class AbstractCrawler implements PageProcessor {
 
@@ -84,7 +86,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 
 					/* 如果新闻还有转发源，并且该源是新闻页面 */
 					String sourceUrl = news.getSourceUrl();
-					if (!"".equals(sourceUrl) && isNewsUrl(sourceUrl)) {
+					if (!"".equals(sourceUrl) && URLUtil.isNewsUrl(sourceUrl)) {
 						page.addTargetRequest(sourceUrl);
 					}
 				}
@@ -138,21 +140,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 		cache.add(key, news);
 	}
 
-	private boolean isNewsUrl(String url) {
-		if (!url.contains(".htm") && !url.contains(".shtml")) {
-			String temp = url.substring(url.indexOf("://") + 3);
-			if (temp.contains("/")) {
-				temp = temp.substring(temp.indexOf("/") + 1);
-				Pattern pattern = Pattern.compile(".*\\d+.*");
-				return pattern.matcher(temp).matches();
 
-			} else {
-				return false;
-			}
-		} else {
-			return true;
-		}
-	}
 
 	/**
 	 * 
@@ -172,7 +160,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 	 *         </p>
 	 */
 	private String getNewsUrlKey(String url) {
-		if (isNewsUrl(url)) {
+		if (URLUtil.isNewsUrl(url)) {
 			String suffix = url.substring(url.lastIndexOf("/") + 1);
 			String prefix = url.substring(0, url.lastIndexOf("/") + 1);
 			String key = null;

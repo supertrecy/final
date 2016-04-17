@@ -31,7 +31,7 @@ public class HtmlParser {
 			}else{
 				isStandardTime = false;
 			}
-			info.setRawContent(html);
+			//info.setRawContent(html);
 		}
 		
 		String text = new ContentParser().parseContent(html, url);

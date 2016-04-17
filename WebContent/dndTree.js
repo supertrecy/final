@@ -357,10 +357,20 @@ treeJSON = d3.json("flare.json", function(error, treeData) {
     // Toggle children on click.
 
     function click(d) {
-        if (d3.event.defaultPrevented) return; // click suppressed
-        d = toggleChildren(d);
-        update(d);
-        centerNode(d);
+    	if(d.url == undefined){
+    		d3.select(".link-div").style("display","none");
+    	}else{
+    		d3.select(".link-div").style("display","block");
+    		d3.select(".title").text(d.title).attr("href",d.url);
+        	if(d.sourceUrl == undefined)
+        		d3.select(".source").text(d.source).attr("href","#").attr("target","_self");
+        	else
+        		d3.select(".source").text(d.source).attr("href",d.sourceUlr).attr("target","_blank");
+    	}
+//        if (d3.event.defaultPrevented) return; // click suppressed
+//        d = toggleChildren(d);
+//        update(d);
+//        centerNode(d);
     }
 
     function update(source) {
@@ -403,7 +413,7 @@ treeJSON = d3.json("flare.json", function(error, treeData) {
 
         // Enter any new nodes at the parent's previous position.
         var nodeEnter = node.enter().append("g")
-            .call(dragListener)
+//            .call(dragListener)
             .attr("class", "node")
             .attr("transform", function(d) {
                 return "translate(" + source.y0 + "," + source.x0 + ")";
@@ -427,7 +437,12 @@ treeJSON = d3.json("flare.json", function(error, treeData) {
                 return d.children || d._children ? "end" : "start";
             })
             .text(function(d) {
-                return d.name;
+               if(d.name == ''){
+            	   $(this).parent().children().first().css("stroke","#999");
+               }else if(d.url == undefined){
+            	   $(this).parent().children().first().css("stroke","#ff0");
+               }
+            	return d.name;
             })
             .style("fill-opacity", 0);
 

@@ -25,7 +25,7 @@ public class DBHelper {
             e.printStackTrace();    
         }    
         cpds.setMaxPoolSize(15);    
-        cpds.setMinPoolSize(5);     
+        cpds.setMinPoolSize(0);     
         cpds.setMaxIdleTime(60);    
     }    
     

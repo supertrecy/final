@@ -33,7 +33,7 @@ public class NewsInfoDao {
 			while (rs.next()) {
 				NewsInfo news = new NewsInfo();
 				news.setContent(rs.getString("CONTENT"));
-				news.setRawContent(rs.getString("CONTENT_HTML"));
+				//news.setRawContent(rs.getString("CONTENT_HTML"));
 				news.setFetchtime(rs.getString("FETCH_TIME"));
 				news.setKeywords(rs.getString("KEYWORDS"));
 				news.setPubtime(rs.getString("PUBLISH_TIME"));
@@ -82,7 +82,7 @@ public class NewsInfoDao {
 			while (rs.next()) {
 				NewsInfo news = new NewsInfo();
 				news.setContent(rs.getString("CONTENT"));
-				news.setRawContent(rs.getString("CONTENT_HTML"));
+				//news.setRawContent(rs.getString("CONTENT_HTML"));
 				news.setFetchtime(rs.getString("FETCH_TIME"));
 				news.setKeywords(rs.getString("KEYWORDS"));
 				news.setPubtime(rs.getString("PUBLISH_TIME"));

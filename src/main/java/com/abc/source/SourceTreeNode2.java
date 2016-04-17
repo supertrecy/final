@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.abc.cluster.SimilarityContext;
 import com.abc.db.entity.NewsInfo;
+import com.abc.util.Util;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -73,24 +74,8 @@ public class SourceTreeNode2 {
 	}
 
 	public boolean insert(SourceTreeNode2 node) {
-		if(this.isNews()){
-			//如果该this是新闻型节点
-			boolean isChild = SimilarityContext.nearlySameNode(this, node);
-			if(isChild){
-				addChild(node);
-				return true;
-			}
-		}else{
-			//如果该this是站点string型节点
-			String childSource = node.getElement().getSource();
-			if(site.equals(childSource)||site.contains(childSource)||childSource.contains(site)){
-				if(childSource.contains(site))
-					node.getElement().setSource(site);
-				site = null;
-				this.element = node.getElement();
-				return true;
-			}
-		}
+		if(SimilarityContext.sourceMatchAndInsert(this, node))
+			return true;
 		
 		// 递归到子树中
 		for (SourceTreeNode2 child : children) {
@@ -102,10 +87,11 @@ public class SourceTreeNode2 {
 
 	public JSONObject wholeTreeToJSON() {
 		JSONObject root = new JSONObject();
-		if(isNews())
-			root.put("name", element.getSite()+":"+element.getId());
-		else
+		if(isNews()){
+			root = Util.wrapJsonObject(root, element);
+		}else{
 			root.put("name", site);
+		}
 		if (getChildrenNum() != 0) {
 			JSONArray jsonChildren = new JSONArray();
 			for (SourceTreeNode2 child : children) {

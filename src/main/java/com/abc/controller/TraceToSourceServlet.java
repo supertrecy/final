@@ -22,6 +22,7 @@ import com.abc.cluster.SimilarityContext;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 import com.abc.source.SourceTreeNode;
+import com.abc.util.Util;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -50,7 +51,12 @@ public class TraceToSourceServlet extends HttpServlet {
 		LinkedList<SourceTreeNode> trees = new LinkedList<>();
 		for (NewsInfo newsInfo : newsList) {
 			int counter = 0;
-			// 遍历所有已存在的树
+			// 如果是原创的
+			if(Util.isOriginal(newsInfo)){
+				trees.add(new SourceTreeNode(newsInfo));
+				continue;
+			}
+			// 如果不是原创，遍历所有已存在的树
 			for (SourceTreeNode root : trees) {
 				// 如果这个newsInfo是某棵树的父节点
 				SourceTreeNode node = new SourceTreeNode(newsInfo);
@@ -126,7 +132,7 @@ public class TraceToSourceServlet extends HttpServlet {
 			JSONObject treeJsonObj = new JSONObject();
 			JSONArray treeJsonArr = new JSONArray();
 			List<SourceTreeNode> list = map.get(site);
-			if (list.size() > 1) {
+			if (list.size() > 1 ) {
 				treeJsonObj.put("name", site);
 				for (SourceTreeNode root : list) {
 					treeJsonArr.add(root.wholeTreeToJSON());
@@ -168,5 +174,6 @@ public class TraceToSourceServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
+
 
 }
