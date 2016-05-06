@@ -24,8 +24,8 @@ public class SimilarityMatrix implements AttachTag {
 		matrix = new double[dimension][dimension];
 
 		/* 获取每条新闻的向量表示 */
-		DocumentDimension dd = new DocumentDimension();
-		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
+		DocumentDimension dd = new DocumentDimension(newsList);
+		Weight wc = new Weight(dd.getAllWordsOfDocument());
 		vectorlist = new ArrayList<>(dimension);
 		if (needTag) {
 			newsVectorMap = new HashMap<>();

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.abc.crawler.extract.MutiplePageNewsCachePool;
 import com.abc.db.dao.NewsInfoDao;
@@ -19,7 +18,6 @@ import com.abc.util.Util;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.utils.UrlUtils;
 
 public abstract class AbstractCrawler implements PageProcessor {
 
@@ -37,7 +35,7 @@ public abstract class AbstractCrawler implements PageProcessor {
 		cache = MutiplePageNewsCachePool.getInstance();
 	}
 
-	@Override
+	@Override	
 	public Site getSite() {
 		return site;
 	}

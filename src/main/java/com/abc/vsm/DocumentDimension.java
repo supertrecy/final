@@ -12,9 +12,9 @@ public class DocumentDimension {
 	private Map<String, Integer> allwords = null;
 	private Map<String, Integer> allwordsDF = null;
 
-	public DocumentDimension() {
-		allwords = new HashMap<String, Integer>();
-	}
+//	public DocumentDimension() {
+//		allwords = new HashMap<String, Integer>();
+//	}
 
 	public DocumentDimension(List<NewsInfo> newsList) {
 		allwords = new HashMap<String, Integer>();
@@ -43,7 +43,7 @@ public class DocumentDimension {
 		}
 	}
 
-	public Map<String, Integer> getAllWordsOfDocument(List<NewsInfo> newsList) {
+	/*public Map<String, Integer> getAllWordsOfDocument(List<NewsInfo> newsList) {
 		int index = 0;
 		for (NewsInfo newsInfo : newsList) {
 			List<String> words = WordSegUtil.participle(newsInfo.getContent());
@@ -67,7 +67,7 @@ public class DocumentDimension {
 			}
 		}
 		return allwords;
-	}
+	}*/
 
 	public Map<String, Integer> getAllWordsOfDocument() {
 		return allwords;

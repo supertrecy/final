@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -83,10 +85,10 @@ public class PrintUtil {
 	 * 
 	 * @param al
 	 */
-	public static void writeClusterAndTagListToFile(ImprovedAGNEST2 al, long startTime, double similarity)
+	public static void writeClusterAndTagListToFile(String keyword,ImprovedAGNEST2 al, long startTime, double similarity)
 			throws IOException {
 		DecimalFormat df = new DecimalFormat("#0.00");
-		File file = new File("E:\\testfiles\\ImprovedAGNEST2Test\\二胎生下三胞胎\\" + df.format(similarity) + ".txt");
+		File file = new File("E:\\testfiles\\ImprovedAGNEST2Test\\"+ keyword +"\\" + df.format(similarity) + ".txt");
 		if (!file.exists())
 			file.createNewFile();
 		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
@@ -116,9 +118,9 @@ public class PrintUtil {
 	 * @param al
 	 * @param classname
 	 */
-	public static void writeClusterAndTagListToFile(AGNEST al, long startTime, int clusterNum, String classname)
+	public static void writeClusterAndTagListToFile(String keyword,AGNEST al, long startTime, int clusterNum, String classname)
 			throws IOException {
-		File file = new File("E:\\testfiles\\" + classname + "\\二胎生下三胞胎\\" + clusterNum + ".txt");
+		File file = new File("E:\\testfiles\\" + classname + "\\"+ keyword +"\\" + clusterNum + ".txt");
 		if (!file.exists())
 			file.createNewFile();
 		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));

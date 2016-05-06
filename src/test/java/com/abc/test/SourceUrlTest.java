@@ -17,27 +17,27 @@ import com.abc.vsm.Similarity;
 import com.abc.vsm.Weight;
 
 public class SourceUrlTest {
-//	@Test
-//	public void divideList() {
-//		List<NewsInfo> newsList = NewsInfoDao.getNewsList();
-//		List<String> news = new LinkedList<>();
-//		List<String> nonews = new LinkedList<>();
-//		for (NewsInfo newsInfo : newsList) {
-//			String source_url = newsInfo.getSourceUrl();
-//			if (source_url != null && !source_url.equals("")) {
-//				if (isNewsUrl(source_url))
-//					news.add(source_url);
-//				else
-//					nonews.add(source_url);
-//			}
-//
-//		}
-//		System.out.println("新闻类URL：");
-//		printlist(news);
-//		System.out.println("======================================================================");
-//		System.out.println("非新闻类URL：");
-//		printlist(nonews);
-//	}
+	@Test
+	public void divideList() {
+		List<NewsInfo> newsList = NewsInfoDao.getNewsList();
+		List<String> news = new LinkedList<>();
+		List<String> nonews = new LinkedList<>();
+		for (NewsInfo newsInfo : newsList) {
+			String source_url = newsInfo.getSourceUrl();
+			if (source_url != null && !source_url.equals("")) {
+				if (isNewsUrl(source_url))
+					news.add(source_url);
+				else
+					nonews.add(source_url);
+			}
+
+		}
+		System.out.println("新闻类URL：");
+		printlist(news);
+		System.out.println("======================================================================");
+		System.out.println("非新闻类URL：");
+		printlist(nonews);
+	}
 
 	private void printlist(List<String> list) {
 		for (String string : list) {
@@ -90,11 +90,11 @@ public class SourceUrlTest {
 		System.out.println("source url相同的新闻有" + map.size() + "簇");
 		System.out.println("下面开始聚类……");
 		Map<Integer, List<Double>> dmap = new HashMap<>();
-		DocumentDimension dd = new DocumentDimension();
-		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
+		DocumentDimension dd = new DocumentDimension(newsList);
+		Weight wc = new Weight(dd.getAllWordsOfDocument());
 		for (Iterator<String> iterator = map.keySet().iterator(); iterator.hasNext();) {
 			String sourceUrl = (String) iterator.next();
-			if(map.get(sourceUrl).size()>1&&isNewsUrl(sourceUrl)){
+			if (map.get(sourceUrl).size() > 1 && isNewsUrl(sourceUrl)) {
 				System.out.println(sourceUrl);
 				System.out.println("以下是url：");
 				int index = 0;
@@ -117,11 +117,11 @@ public class SourceUrlTest {
 					}
 					System.out.println("/end");
 					System.out.println(" ");
-					
+
 				}
 				System.out.println("----------------------------------------------------------------");
 			}
 		}
 	}
-	
+
 }

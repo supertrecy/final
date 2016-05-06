@@ -9,10 +9,10 @@ import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 
 public class ImprovedAGNESTTest {
-
-	private final String SEARCH_WORDS="女子动车拒让座;";
+	private final String KEYWORD = "二胎生下三胞胎";
+	private final String SEARCH_WORDS = KEYWORD + ";";
 	private final int CLUSTER_NUM = 15;
-	
+
 	@Test
 	public void clustering() {
 		long time = System.currentTimeMillis();
@@ -21,7 +21,7 @@ public class ImprovedAGNESTTest {
 		PrintUtil.printCluster(al);
 		System.out.println("总用时：" + (double) (System.currentTimeMillis() - time) / 1000 + "秒");
 	}
-	
+
 	@Test
 	public void clusteringMapTags() {
 		long time = System.currentTimeMillis();
@@ -39,18 +39,18 @@ public class ImprovedAGNESTTest {
 		PrintUtil.printClusterAndTagList(al);
 		System.out.println("总用时：" + (double) (System.currentTimeMillis() - time) / 1000 + "秒");
 	}
-	
+
 	@Test
 	public void clusteringListTagAndWriteToFile() {
 		int lowlimit = 1;
 		for (int i = 0; i < 25; i++) {
 			long time = System.currentTimeMillis();
-			int clusterNum = lowlimit+i;
+			int clusterNum = lowlimit + i;
 			List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(SEARCH_WORDS);
 			System.out.println(newsList.size());
-			AGNEST al = new ImprovedAGNEST(newsList, lowlimit+i, true);
+			AGNEST al = new ImprovedAGNEST(newsList, lowlimit + i, true);
 			try {
-				PrintUtil.writeClusterAndTagListToFile(al, time, clusterNum, "ImprovedAGNESTTest");
+				PrintUtil.writeClusterAndTagListToFile(KEYWORD,al, time, clusterNum, "ImprovedAGNESTTest");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -21,12 +21,22 @@ public class Weight {
 	private DecimalFormat df = new DecimalFormat("#0.000");
 	private final int TAGS_NUM = 15;
 
+	/**
+	 * 
+	 * @param allwords
+	 */
 	public Weight(Map<String, Integer> allwords) {
 		Weight.allwords = allwords;
 		lengthOfVector = Weight.allwords.size();
 		wordWeightMap = new HashMap<>();
 	}
 
+	/**
+	 * 
+	 * @param docNums
+	 * @param allwords
+	 * @param allwordsDF
+	 */
 	public Weight(int docNums, Map<String, Integer> allwords, Map<String, Integer> allwordsDF) {
 		Weight.allwords = allwords;
 		Weight.allwordsDF = allwordsDF;

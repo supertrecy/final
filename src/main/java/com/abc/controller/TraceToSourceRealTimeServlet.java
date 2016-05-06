@@ -50,7 +50,7 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		System.out.println("*********************************cache整理*********************************");
 		MutiplePageNewsCachePool cache = MutiplePageNewsCachePool.getInstance();
 		MutiplePageNewsCachePool.setSearchWordsStr(search_words);
-		cache.store();
+		//cache.store();
 		cache.clear();
 
 		if (keyword == null) {

@@ -10,7 +10,8 @@ import com.abc.db.entity.NewsInfo;
 
 public class AGNESTest {
 
-	private final String SEARCH_WORDS="二胎生下三胞胎;";
+	private final String KEYWORD="二胎生下三胞胎";
+	private final String SEARCH_WORDS=KEYWORD+";";
 	private final int CLUSTER_NUM = 15;
 	
 	@Test
@@ -49,7 +50,7 @@ public class AGNESTest {
 			List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(SEARCH_WORDS);
 			AGNEST al = new AGNEST(newsList, lowlimit+i, true);
 			try {
-				PrintUtil.writeClusterAndTagListToFile(al, time, clusterNum, "AGNESTTest");
+				PrintUtil.writeClusterAndTagListToFile(KEYWORD,al, time, clusterNum, "AGNESTTest");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

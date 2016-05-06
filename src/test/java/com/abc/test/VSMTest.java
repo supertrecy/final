@@ -11,8 +11,8 @@ public class VSMTest {
 	
 	public static void main(String[] args) {
 		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords("二胎生下三胞胎;");
-		DocumentDimension dd = new DocumentDimension();
-		Weight wc = new Weight(dd.getAllWordsOfDocument(newsList));
+		DocumentDimension dd = new DocumentDimension(newsList);
+		Weight wc = new Weight(dd.getAllWordsOfDocument());
 		testBool(wc,newsList);
 		testTF(wc,newsList);
 		testTFIDF(wc,newsList);

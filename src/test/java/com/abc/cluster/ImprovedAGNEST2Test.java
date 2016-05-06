@@ -10,7 +10,8 @@ import com.abc.db.entity.NewsInfo;
 
 public class ImprovedAGNEST2Test {
 	
-	private final String SEARCH_WORDS="女子动车拒让座;";
+	private final String KEYWORD = "女子动车拒让座";
+	private final String SEARCH_WORDS = KEYWORD + ";";
 	private double lowerLimitSimilarity = 1.0;
 	
 	@Test
@@ -50,7 +51,7 @@ public class ImprovedAGNEST2Test {
 			List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(SEARCH_WORDS);
 			ImprovedAGNEST2 al = new ImprovedAGNEST2(newsList, similarity, true);
 			try {
-				PrintUtil.writeClusterAndTagListToFile(al, time, similarity);
+				PrintUtil.writeClusterAndTagListToFile(KEYWORD,al, time, similarity);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
