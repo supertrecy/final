@@ -29,12 +29,12 @@ public class FilterUtil {
 
 	public static NewsInfo filterAfterParse(NewsInfo info, boolean isStandardTime, List<String> filterWords) {
 		/* 过滤不含关键词的内容 */
-//		String content = info.getContent();
-//		if (!containKeywords(content, wordSegmentation(filterWords))) {
-//			// System.out.println(content); //TODO 还是会漏掉相关的，可以和标题一起筛选查看是否是标题党
-//			// System.out.println("--------------------------------------------------");
-//			return null;
-//		}
+		String content = info.getContent();
+		if (!containKeywords(content, wordSegmentation(filterWords))) {
+			// System.out.println(content); //TODO 还是会漏掉相关的，可以和标题一起筛选查看是否是标题党
+			// System.out.println("--------------------------------------------------");
+			return null;
+		}
 
 		/* 过滤长度过长的source */
 		String source = info.getSource();

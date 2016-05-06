@@ -72,8 +72,9 @@ public class MutiplePageNewsCachePool {
 			for (NewsInfo newsInfo : list) {
 				System.out.println(newsInfo.getUrl()+newsInfo.getSite());
 				sb.append(newsInfo.getContent());
-				if(newsInfo.getSite()!= null||!"".equals(newsInfo.getSite()))
+				if(newsInfo.getSite()!= null&&!"".equals(newsInfo.getSite())){
 					news = newsInfo;
+				}
 			}
 			news.setContent(sb.toString());
 			news.setUrl(url);
@@ -81,6 +82,7 @@ public class MutiplePageNewsCachePool {
 			System.out.println("-------------------------------------------------------------------------");
 			newsList.add(news);
 			NewsInfoDao.addNews(news);
+			news = null;
 		}
 	}
 

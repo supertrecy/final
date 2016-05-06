@@ -20,7 +20,7 @@ import com.abc.db.entity.NewsInfo;
  */
 public class NewsInfoDao {
 	public static final Logger LOG = LoggerFactory.getLogger(NewsInfoDao.class);
-	
+
 	public static List<NewsInfo> getNewsList() {
 		List<NewsInfo> newsList = new ArrayList<NewsInfo>();
 		Connection con = null;
@@ -33,7 +33,7 @@ public class NewsInfoDao {
 			while (rs.next()) {
 				NewsInfo news = new NewsInfo();
 				news.setContent(rs.getString("CONTENT"));
-				//news.setRawContent(rs.getString("CONTENT_HTML"));
+				// news.setRawContent(rs.getString("CONTENT_HTML"));
 				news.setFetchtime(rs.getString("FETCH_TIME"));
 				news.setKeywords(rs.getString("KEYWORDS"));
 				news.setPubtime(rs.getString("PUBLISH_TIME"));
@@ -69,7 +69,6 @@ public class NewsInfoDao {
 		return newsList;
 	}
 
-
 	public static List<NewsInfo> getNewsListBySearchWords(String keyword) {
 		List<NewsInfo> newsList = new ArrayList<NewsInfo>();
 		Connection con = null;
@@ -82,7 +81,7 @@ public class NewsInfoDao {
 			while (rs.next()) {
 				NewsInfo news = new NewsInfo();
 				news.setContent(rs.getString("CONTENT"));
-				//news.setRawContent(rs.getString("CONTENT_HTML"));
+				// news.setRawContent(rs.getString("CONTENT_HTML"));
 				news.setFetchtime(rs.getString("FETCH_TIME"));
 				news.setKeywords(rs.getString("KEYWORDS"));
 				news.setPubtime(rs.getString("PUBLISH_TIME"));
@@ -136,17 +135,32 @@ public class NewsInfoDao {
 			stat.setString(8, news.getFetchtime());
 			stat.setString(9, news.getSearchWords());
 			stat.setString(10, news.getSourceUrl());
-			result = stat.executeUpdate()>0?true:false;
+			result = stat.executeUpdate() > 0 ? true : false;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
-			if(stat != null)
+			try {
+				if (stat != null)
+					stat.close();
+				if (con != null)
+					con.close();
+				sql = "delete from news_search_data where url = ?";
+				con = DBHelper.getConnection();
+				stat = con.prepareStatement(sql);
+				stat.setString(1, news.getUrl());
+				stat.executeUpdate();
+				result = false;
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+		} finally {
+			if (stat != null)
 				try {
 					stat.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-			if(con != null)
+			if (con != null)
 				try {
 					con.close();
 				} catch (SQLException e) {
@@ -155,8 +169,8 @@ public class NewsInfoDao {
 		}
 		return result;
 	}
-	
-	public static boolean isExist(String url){
+
+	public static boolean isExist(String url) {
 		String sql = "select * from news_search_data where URL = ?";
 		PreparedStatement stat = null;
 		Connection con = null;
@@ -165,18 +179,18 @@ public class NewsInfoDao {
 		try {
 			stat = con.prepareStatement(sql);
 			stat.setString(1, url);
-			if(stat.executeQuery().next())
+			if (stat.executeQuery().next())
 				result = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
-			if(stat != null)
+		} finally {
+			if (stat != null)
 				try {
 					stat.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-			if(con != null)
+			if (con != null)
 				try {
 					con.close();
 				} catch (SQLException e) {
@@ -185,5 +199,5 @@ public class NewsInfoDao {
 		}
 		return result;
 	}
-	
+
 }

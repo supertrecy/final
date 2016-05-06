@@ -11,7 +11,8 @@ import org.wltea.analyzer.core.Lexeme;
 public class WordSegUtil {
 
 	public static List<String> participle(String text) {
-
+		if(text == null)
+			return null;
 		List<String> str1 = new LinkedList<String>();// 对输入进行分词
 
 		try {

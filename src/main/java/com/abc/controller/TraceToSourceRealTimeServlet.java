@@ -159,7 +159,7 @@ public class TraceToSourceRealTimeServlet extends HttpServlet {
 		}
 
 		/* 没有子树的节点聚类，并转化为json */
-		List<Cluster> result = new ImprovedAGNEST3(scontext.matrix(), 0.9).clustering(rest);
+		List<Cluster> result = new ImprovedAGNEST3(scontext.matrix(), 0.9).clustering(newsList);
 		for (Cluster cluster : result) {
 			if (cluster.getPoints().size() > 1)
 				array.add(ListToTree.clusterToTree(cluster));

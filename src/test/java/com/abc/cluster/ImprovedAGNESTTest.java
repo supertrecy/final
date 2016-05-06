@@ -10,7 +10,7 @@ import com.abc.db.entity.NewsInfo;
 
 public class ImprovedAGNESTTest {
 
-	private final String SEARCH_WORDS="二胎生下三胞胎;";
+	private final String SEARCH_WORDS="女子动车拒让座;";
 	private final int CLUSTER_NUM = 15;
 	
 	@Test
@@ -47,6 +47,7 @@ public class ImprovedAGNESTTest {
 			long time = System.currentTimeMillis();
 			int clusterNum = lowlimit+i;
 			List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(SEARCH_WORDS);
+			System.out.println(newsList.size());
 			AGNEST al = new ImprovedAGNEST(newsList, lowlimit+i, true);
 			try {
 				PrintUtil.writeClusterAndTagListToFile(al, time, clusterNum, "ImprovedAGNESTTest");

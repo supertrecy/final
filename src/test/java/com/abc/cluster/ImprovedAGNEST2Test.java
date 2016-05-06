@@ -10,7 +10,7 @@ import com.abc.db.entity.NewsInfo;
 
 public class ImprovedAGNEST2Test {
 	
-	private final String SEARCH_WORDS="二胎生下三胞胎;";
+	private final String SEARCH_WORDS="女子动车拒让座;";
 	private double lowerLimitSimilarity = 1.0;
 	
 	@Test
