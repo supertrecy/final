@@ -1,5 +1,6 @@
 package com.abc.cluster;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.abc.db.entity.NewsInfo;
@@ -7,6 +8,10 @@ import com.abc.db.entity.NewsInfo;
 public class Cluster {
 	List<NewsInfo> points;
 
+	public Cluster() {
+		points = new LinkedList<NewsInfo>();
+	}
+	
 	public Cluster(List<NewsInfo> points) {
 		this.points = points;
 	}
