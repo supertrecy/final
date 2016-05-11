@@ -31,5 +31,10 @@ public class Cluster {
 	public NewsInfo getFirst(){
 		return points.get(0);
 	}
-
+	
+	public int getSize() {
+		return points.size();
+	}
+	
+	
 }
