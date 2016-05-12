@@ -29,9 +29,9 @@ public class PurityTest {
 		List<Cluster> artificialClusters = readHumanResult(keyword);
 		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(keyword + ";");
 		SimilarityContext sContext = new SimilarityContext(newsList);
-		System.out.println("x=0.50:0.001:0.999;");
+		System.out.println("x=0.01:0.01:0.99;");
 		System.out.print("y=[");
-		for (double similarity = 0.50; similarity < 1; similarity += 0.001) {
+		for (double similarity = 0.01; similarity < 1; similarity += 0.01) {
 			int correctNum = 0;
 			List<Cluster> programClusters = new ImprovedAGNEST3(sContext.matrix(), similarity).clustering(newsList);
 			for (Cluster cluster : artificialClusters) {
@@ -89,10 +89,6 @@ public class PurityTest {
 		}
 			
 		return correctNum;
-	}
-
-	private int compareCluster(Cluster cluster, Cluster defination) {
-		return 0;
 	}
 
 	private Cluster findDefinationCluster(NewsInfo point, List<Cluster> programClusters) {
