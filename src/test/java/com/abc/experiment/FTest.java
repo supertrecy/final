@@ -20,7 +20,7 @@ import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 
 public class FTest {
-	String keyword = "空姐银行卡被盗刷";
+	String keyword = "训练水牛跪拜打坐";
 	private int totalNum;
 
 	@Test
@@ -28,13 +28,13 @@ public class FTest {
 		List<Cluster> artificialClusters = readHumanResult(keyword);
 		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(keyword + ";");
 		SimilarityContext sContext = new SimilarityContext(newsList);
-		System.out.println("x=0.01:0.001:0.999;");
-		System.out.print("y=[");
-		for (double similarity = 0.01; similarity < 1; similarity += 0.001) {
+		System.out.println("x=0.01:0.01:0.99;");
+		System.out.print("f1=[");
+		for (double similarity = 0.01; similarity < 1; similarity += 0.01) {
 			List<Cluster> programClusters = new ImprovedAGNEST3(sContext.matrix(), similarity).clustering(newsList);
 			System.out.print(getFResult(artificialClusters, programClusters) + " ");
 		}
-		System.out.println("];plot(x,y);");
+		System.out.println("];");
 	}
 
 	private double getFResult(List<Cluster> artificialClusters, List<Cluster> programClusters) {

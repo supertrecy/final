@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -19,94 +19,79 @@ import com.abc.cluster.SimilarityContext;
 import com.abc.db.dao.NewsInfoDao;
 import com.abc.db.entity.NewsInfo;
 
-public class PurityTest {
-
-	String keyword = "空姐银行卡被盗刷";
+public class PTest {
+	String keyword = "训练水牛跪拜打坐";
 	private int totalNum;
 
 	@Test
-	public void purity() {
+	public void F() {
 		List<Cluster> artificialClusters = readHumanResult(keyword);
 		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(keyword + ";");
 		SimilarityContext sContext = new SimilarityContext(newsList);
 		System.out.println("x=0.01:0.01:0.99;");
-		System.out.print("purity=[");
+		System.out.print("p=[");
 		for (double similarity = 0.01; similarity < 1; similarity += 0.01) {
-			int correctNum = 0;
 			List<Cluster> programClusters = new ImprovedAGNEST3(sContext.matrix(), similarity).clustering(newsList);
-			for (Cluster cluster : artificialClusters) {
-				correctNum += countCorrectPoint(cluster, programClusters);
-			}
-			System.out.print((double) correctNum / getTotalNum() + " ");
-//			System.out.println("----------------------------------------------------------------");
+			System.out.print(getFResult(artificialClusters, programClusters) + " ");
 		}
 		System.out.println("];");
 	}
 
-	private int countCorrectPoint(Cluster cluster, List<Cluster> programClusters) {
-		int pointNum = cluster.getSize();
-		List<NewsInfo> points = cluster.getPoints();
-		List<Boolean> pointFlags = new ArrayList<>(pointNum);
-		List<Cluster> clusters = new LinkedList<>();
-		for (int i = 0; i < pointNum; i++) {
-			pointFlags.add(true);
-		}
-		
-		int correctNum = 0;
-		for (int i = 0; i < pointNum; i++) {
-			//找到point所在的算法分类簇
-			NewsInfo point = points.get(i);
-			Cluster defination = findDefinationCluster(point,programClusters);
-			int artificialClusterSize = cluster.getSize();
-			int definationClusterSize = defination.getSize();
-			if(artificialClusterSize == 1&&definationClusterSize == 1){
-				return 1;
-			}else if(artificialClusterSize != 1&&definationClusterSize != 1){
-				Cluster newone = new Cluster();
-				for (NewsInfo news : defination.getPoints()) {
-					newone.addPoint(news);
+	private double getFResult(List<Cluster> artificialClusters, List<Cluster> programClusters) {
+		int TP, FP, TN, FN;
+		double P,R,F;
+		int denominator = getTotalNum() * (getTotalNum() - 1) / 2;
+		Set<Pair> sameClassPairs = sameClusterPairs(artificialClusters);
+		Set<Pair> sameClusterPairs = sameClusterPairs(programClusters);
+		TP = getTP(sameClassPairs, sameClusterPairs);
+		FP = sameClusterPairs.size() - TP;
+		FN = sameClassPairs.size() - TP;// getFN(sameClassPairs,sameClusterPairs);
+		TN = denominator - TP - FP - FN;
+		return (double)TP / ( TP + FP);
+				
+
+	}
+	// private int getFN(Set<Pair> sameClassPairs, Set<Pair> sameClusterPairs) {
+	// int count = 0;
+	// for (Pair pair : sameClassPairs) {
+	// if(sameClassPairs.contains(pair))
+	// count++;
+	// }
+	// return count;
+	// }
+
+	private int getTP(Set<Pair> sameClassPairs, Set<Pair> sameClusterPairs) {
+		int count = 0;
+		for (Pair pair : sameClusterPairs) {
+//			if (sameClassPairs.contains(pair)){
+//				count++;
+//			}
+			for (Pair pair2 : sameClassPairs) {
+				if(pair.equals(pair2)){
+					//System.out.println(pair.toString()+":"+pair2.toString());
+					count++;
+					break;
 				}
-				clusters.add(newone);
-			}else{
-				pointFlags.set(i, false);
 			}
 		}
-		//去除无关的
-		if(clusters.size()>0){
-			int max = 0;
-			for (Cluster cluster2 : clusters) {
-				List<NewsInfo> list = cluster2.getPoints();
-				int temp = cluster2.getSize();
-				for (NewsInfo newsInfo : list) {
-					if(!contain(cluster, newsInfo))
-						temp--;
-				}
-				if(temp > max)
-					max = temp;
-			}
-			
-			correctNum += max;
-		}
-			
-		return correctNum;
+		return count;
 	}
 
-	private Cluster findDefinationCluster(NewsInfo point, List<Cluster> programClusters) {
-		for (Cluster cluster : programClusters) {
-			if(contain(cluster, point))
-				return cluster;
+	private Set<Pair> sameClusterPairs(List<Cluster> artificialClusters) {
+		Set<Pair> pairs = new HashSet<>();
+		for (Cluster cluster : artificialClusters) {
+			List<NewsInfo> points = cluster.getPoints();
+			int size = cluster.getSize();
+//			 System.out.println(size);
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+						pairs.add(new Pair(points.get(i).getId(), points.get(j).getId()));
+				}
+			}
 		}
-		System.out.println("没找到");
-		return null;
-	}
-	
-	private boolean contain(Cluster cluster,NewsInfo point){
-		List<NewsInfo> points = cluster.getPoints();
-		for (NewsInfo newsInfo : points ) {
-			if (newsInfo.getId() == point.getId())
-				return true;
-		}
-		return false;
+//		 System.out.println(pairs.size());
+//		 System.out.println("---------------------------------");
+		return pairs;
 	}
 
 	/**
@@ -136,7 +121,7 @@ public class PurityTest {
 						int temp = 0;
 						for (int i = 0; i < string.length(); i++) {
 							if (Character.isDigit(string.charAt(i))) {
-								temp = temp * 10 + (string.charAt(i)-'0');
+								temp = temp * 10 + (string.charAt(i) - '0');
 							}
 						}
 						id = temp;

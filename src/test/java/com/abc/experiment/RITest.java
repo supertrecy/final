@@ -29,12 +29,12 @@ public class RITest {
 		List<NewsInfo> newsList = NewsInfoDao.getNewsListBySearchWords(keyword + ";");
 		SimilarityContext sContext = new SimilarityContext(newsList);
 		System.out.println("x=0.01:0.01:0.99;");
-		System.out.print("y=[");
+		System.out.print("ri=[");
 		for (double similarity = 0.01; similarity < 1; similarity += 0.01) {
 			List<Cluster> programClusters = new ImprovedAGNEST3(sContext.matrix(), similarity).clustering(newsList);
 			System.out.print(getRIResult(artificialClusters, programClusters) + " ");
 		}
-		System.out.println("];plot(x,y);");
+		System.out.println("];");
 	}
 
 	private double getRIResult(List<Cluster> artificialClusters, List<Cluster> programClusters) {
